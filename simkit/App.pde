@@ -141,10 +141,10 @@ public class App
     scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
     scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
     scene.add(new IBM704(600, 300));
-    scene.add(new IBM704(900, 500));
-    scene.add(new IBM704(900, 500));
-    scene.add(new Anchor(1000, 50));
-    scene.add(new IBM704(1000, 500));
+    scene.add(new IBM704(600, 500));
+    scene.add(new IBM704(600, 700));
+    scene.add(new IBM704(800, 300));
+    scene.add(new IBM704(800, 500));
     scene.add(new Anchor(1000, 70));
     scene.add(new Anchor(1000, 90));
     scene.add(new Anchor(1000, 110));
