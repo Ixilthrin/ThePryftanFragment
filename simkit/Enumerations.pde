@@ -1,31 +1,31 @@
 enum ItemTypeEnum
 {
   None,
-  Electricity,
-  CoalDeposit,
-  Coal,
-  IronDeposit,
-  Iron,
-  IronPlate,
-  CopperDeposit,
-  Copper,
-  CopperPlate,
-  StoneDeposit,
-  Stone
+    Electricity,
+    CoalDeposit,
+    Coal,
+    IronDeposit,
+    Iron,
+    IronPlate,
+    CopperDeposit,
+    Copper,
+    CopperPlate,
+    StoneDeposit,
+    Stone
 }
 
 enum CommandTypeEnum
 {
   None,
-  TogglePower
+    TogglePower
 }
 
 enum DataDirectionEnum
 {
   None,
-  Input,
-  Output,
-  Twoway
+    Input,
+    Output,
+    Twoway
 }
 
 enum WireEndEnum
@@ -58,6 +58,7 @@ enum DataMovementEnum
 enum ConnectionTypeEnum
 {
   None,
+    Any,
     Ethernet,
     Power,
     TransportBelt
@@ -75,7 +76,7 @@ enum OrientationEnum
 enum FurnaceProductionEnum
 {
   None,
-  IronPlates,
-  CopperPlates,
-  SteelPlates
+    IronPlates,
+    CopperPlates,
+    SteelPlates
 }

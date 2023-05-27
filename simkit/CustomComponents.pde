@@ -16,6 +16,140 @@ public static class ComponentProps //<>//
   public static int FunctionBoxHeight = 60;
 }
 
+
+public class Anchor implements ISceneObject
+{
+  Box theBox;
+  Connector west;
+  Connector north;
+  Connector east;
+  Connector south;
+
+  public Anchor(int x, int y)
+  {
+    PImage image = loadImage("anchor.png");
+    theBox = new Box(x, y, 30, 30, image);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(0, 10), OrientationEnum.West, DataDirectionEnum.Twoway, color(150, 150, 150));
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(10, 0), OrientationEnum.North, DataDirectionEnum.Twoway, color(150, 150, 150));
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(theBox.width - 10, 10), OrientationEnum.East, DataDirectionEnum.Twoway, color(150, 150, 150));
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(10, theBox.height - 10), OrientationEnum.South, DataDirectionEnum.Twoway, color(150, 150, 150));
+
+    west = theBox.connectors.get(0);
+    north = theBox.connectors.get(1);
+    east = theBox.connectors.get(2);
+    south = theBox.connectors.get(3);
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("Anchor / Splitter / Booster");
+    return text;
+  }
+
+  public void update()
+  {
+        
+    ConnectionTypeEnum connectionType = ConnectionTypeEnum.Any;
+    for (int i = 0; i < theBox.connectors.size(); ++i)
+    {
+      Wire theWire = theBox.connectors.get(i).theWire;
+      if (theWire != null && theWire.connectionType != ConnectionTypeEnum.Any)
+      {
+        connectionType = theWire.connectionType; //<>//
+        break;
+      }
+    }
+    if (connectionType != ConnectionTypeEnum.Any)
+    {
+      setConnectionType(connectionType);
+      color _color = color(0, 0, 0);
+      if (connectionType == ConnectionTypeEnum.Ethernet)
+         _color = color(0, 0, 255);
+      else if (connectionType == ConnectionTypeEnum.Power)
+          _color = color(0, 0, 0);
+          
+      west._color = _color; //<>//
+      north._color = _color;
+      east._color = _color;
+      south._color = _color;
+      
+    }
+    else
+    {
+      color _color = color(180, 180, 180);
+          
+      west._color = _color;
+      north._color = _color;
+      east._color = _color;
+      south._color = _color;
+      
+      west.connectionType = ConnectionTypeEnum.Any;
+      north.connectionType = ConnectionTypeEnum.Any;
+      east.connectionType = ConnectionTypeEnum.Any;
+      south.connectionType = ConnectionTypeEnum.Any;
+    }
+  }
+
+  private void setConnectionType(ConnectionTypeEnum type)
+  {
+    for (int i = 0; i < theBox.connectors.size(); ++i)
+    {
+      theBox.connectors.get(i).connectionType = type;
+    }
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    Connector sender = null;
+
+    if (west.theWire != null && west != source)
+    {
+      sender = west;
+      theBox.send(sender, payload);
+    }
+    if (north.theWire != null && north != source)
+    {
+      sender = north;
+      theBox.send(sender, payload);
+    }
+    if (east.theWire != null && east != source)
+    {
+      sender = east;
+      theBox.send(sender, payload);
+    }
+    if (south.theWire != null && south != source)
+    {
+      sender = south;
+      theBox.send(sender, payload);
+    }
+
+
+    return true;
+  }
+}
+
 public class CodeBox implements ISceneObject, IKeyboardListener
 {
   Box theBox;
@@ -26,7 +160,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
 
   public CodeBox(int x, int y)
   {
-    
+
     PImage image = loadImage("code.png");
     theBox = new Box(x, y, ComponentProps.FunctionBoxWidth, ComponentProps.FunctionBoxHeight, image);
     theBox.theProvider = this;
@@ -50,7 +184,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
   {
     textInput.x = theBox.x + 5;
     textInput.y = theBox.y + 20;
-    
+
     int currentTime = millis();
     interval += currentTime - previousUpdateTime;
     if (interval > 2000)
@@ -67,7 +201,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
     theBox.draw();
     textInput.draw();
   }
-  
+
   public void keyPress(int code)
   {
     textInput.keyPress(code);
@@ -87,7 +221,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     return false;
   }
@@ -167,7 +301,7 @@ public class NaturalDeposit implements ISceneObject
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     return false;
   }
@@ -232,7 +366,7 @@ public class WoodenBox implements ISceneObject
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     if (!(payload instanceof ItemPayload))
     {
@@ -359,7 +493,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     if (!(payload instanceof ItemPayload))
     {
@@ -503,7 +637,7 @@ public class StoneFurnace implements ISceneObject
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     if (!(payload instanceof ItemPayload))
     {
@@ -624,7 +758,7 @@ public class IBM704 implements ISceneObject
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     if (payload instanceof ItemPayload)
     {
@@ -708,7 +842,7 @@ public class WireBundle implements ISceneObject, IWireSource
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     return false;
   }
@@ -800,7 +934,7 @@ public class PowerSupply implements ISceneObject
     return false;
   }
 
-  public boolean receive(IPayload payload)
+  public boolean receive(IPayload payload, Connector source)
   {
     isOn = !isOn;
     return true;

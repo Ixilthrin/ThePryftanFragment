@@ -42,7 +42,7 @@ public class Connector
   {
     if (theBox != null)
     {
-      theBox.receive(payload);
+      theBox.receive(payload, this);
     }
   }
 }
@@ -53,12 +53,12 @@ public class Wire implements IDrawable
   Connector end0;
   Connector end1;
   ArrayList<Point> points;
-  
+
   private float payloadProgress = 0f;
   private int millisSinceLastUpdate = 0;
   float speed = 0f;
   private DataMovementEnum dataMovement = DataMovementEnum.None;
-  
+
   IPayload payload;
 
   PayloadDirectionEnum payloadDirection = PayloadDirectionEnum.None;
@@ -276,7 +276,7 @@ public class Wire implements IDrawable
   {
     if (connectionType == ConnectionTypeEnum.Ethernet)
     {
-      stroke(40,40, 220);
+      stroke(40, 40, 220);
       fill(40, 40, 220);
     } else if (connectionType == ConnectionTypeEnum.Power)
     {
@@ -304,8 +304,8 @@ public class Wire implements IDrawable
         stroke(0, 0, 0);
         fill(0, 0, 0);
       }
-        stroke(0, 0, 0);
-        fill(0, 0, 0);
+      stroke(0, 0, 0);
+      fill(0, 0, 0);
       ellipse(points.get(payloadIndex).x, points.get(payloadIndex).y, size, size);
     }
   }

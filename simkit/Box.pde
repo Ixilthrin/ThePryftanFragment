@@ -43,9 +43,9 @@ public class Box
     return false;
   }
 
-  public void receive(IPayload payload)
+  public void receive(IPayload payload, Connector source)
   {
-    theProvider.receive(payload);
+    theProvider.receive(payload, source);
   }
 
   public void draw()
@@ -139,7 +139,7 @@ public class Box
         Connector connector = getConnectorAtPoint(x, y);
         if (connector.theWire == null)
         {
-          if (wire.end0 == null && wire.connectionType == connector.connectionType)
+          if (wire.end0 == null && (wire.connectionType == connector.connectionType || connector.connectionType == ConnectionTypeEnum.Any))
           {
             if (canConnectWire(wire, connector))
             {
@@ -149,7 +149,7 @@ public class Box
               return true;
             }
           }
-          if (wire.end1 == null && wire.connectionType == connector.connectionType)
+          if (wire.end1 == null && (wire.connectionType == connector.connectionType || connector.connectionType == ConnectionTypeEnum.Any))
           {
             if (canConnectWire(wire, connector))
             {
@@ -172,15 +172,15 @@ public class Box
 
     if (wire.end0 == null && wire.end1 != null)
     {
-      if (wire.end1.direction == DataDirectionEnum.Input && connector.direction == DataDirectionEnum.Output)
+      if (wire.end1.direction == DataDirectionEnum.Input && connector.direction == DataDirectionEnum.Input)
       {
-        return true;
+        return false;
       }
-      if (wire.end1.direction == DataDirectionEnum.Output && connector.direction ==DataDirectionEnum.Input)
+      if (wire.end1.direction == DataDirectionEnum.Output && connector.direction == DataDirectionEnum.Output)
       {
-        return true;
+        return false;
       }
-      if (wire.end1.direction == DataDirectionEnum.Twoway && connector.direction == DataDirectionEnum.Twoway)
+      if (wire.end1.direction == DataDirectionEnum.Twoway || connector.direction ==DataDirectionEnum.Twoway)
       {
         return true;
       }
@@ -188,21 +188,21 @@ public class Box
 
     if (wire.end0 != null && wire.end1 == null)
     {
-      if (wire.end0.direction == DataDirectionEnum.Input && connector.direction == DataDirectionEnum.Output)
+      if (wire.end0.direction == DataDirectionEnum.Input && connector.direction == DataDirectionEnum.Input)
       {
-        return true;
+        return false;
       }
-      if (wire.end0.direction == DataDirectionEnum.Output && connector.direction ==DataDirectionEnum.Input)
+      if (wire.end0.direction == DataDirectionEnum.Output && connector.direction == DataDirectionEnum.Output)
       {
-        return true;
+        return false;
       }
-      if (wire.end0.direction == DataDirectionEnum.Twoway && connector.direction == DataDirectionEnum.Twoway)
+      if (wire.end0.direction == DataDirectionEnum.Twoway || connector.direction == DataDirectionEnum.Twoway)
       {
         return true;
       }
     }
 
-    return false;
+    return true;
   }
 
   public Wire tryDisconnectWire(Wire heldWire, int x, int y)
