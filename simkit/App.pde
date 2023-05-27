@@ -25,7 +25,7 @@ public class App
     frameRate(60);
     font = createFont("Arial", 16, true); // Arial, 16 point, anti-aliasing on
 
-    loadAssets();
+    populateScene();
   }
 
   public void addWire(Wire wire)
@@ -133,7 +133,7 @@ public class App
     }
   }
 
-  public void loadAssets()
+  public void populateScene()
   {
     scene.add(new NaturalDeposit(100, 100, ItemTypeEnum.CoalDeposit));
     scene.add(new NaturalDeposit(100, 200, ItemTypeEnum.IronDeposit));
