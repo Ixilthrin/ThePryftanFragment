@@ -17,6 +17,8 @@ public class App
 
   public void setup()
   {
+    surface.setTitle("Device Playground");
+    
     scene = new Scene();
     mutableState.heldWire = new Wire(ConnectionTypeEnum.None);
     backgroundImage = loadImage("workbench1600x1000.jpg");
