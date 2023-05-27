@@ -19,8 +19,8 @@ public class App
   {
     scene = new Scene();
     mutableState.heldWire = new Wire(ConnectionTypeEnum.None);
-    backgroundImage = loadImage("factorio_background.png");
-    size(1860, 960);
+    backgroundImage = loadImage("workbench1600x1000.jpg");
+    size(1600, 1000);  // for background must be exactly same as image
     //fullScreen();
     frameRate(60);
     font = createFont("Arial", 16, true); // Arial, 16 point, anti-aliasing on
@@ -135,25 +135,11 @@ public class App
 
   public void populateScene()
   {
-    scene.add(new NaturalDeposit(100, 100, ItemTypeEnum.CoalDeposit));
-    scene.add(new NaturalDeposit(100, 200, ItemTypeEnum.IronDeposit));
-    scene.add(new NaturalDeposit(100, 300, ItemTypeEnum.CopperDeposit));
-    scene.add(new NaturalDeposit(100, 400, ItemTypeEnum.StoneDeposit));
-    scene.add(new CoalPoweredMiningDrill(300, 200));
-    scene.add(new CoalPoweredMiningDrill(450, 200));
     scene.add(new PowerSupply(50, 550));
     scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
     scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
-    scene.add(new WireBundle(350, 600, ConnectionTypeEnum.TransportBelt));
-    scene.add(new StoneFurnace(400, 300));
     scene.add(new IBM704(600, 300));
     scene.add(new IBM704(800, 500));
-    scene.add(new WoodenBox(700, 50));
-    scene.add(new CodeBox(700, 400));
-    scene.add(new CodeBox(700, 450));
-    scene.add(new CodeBox(700, 500));
-    scene.add(new CodeBox(700, 550));
-    scene.add(new CodeBox(700, 600));
   }
 }
 
