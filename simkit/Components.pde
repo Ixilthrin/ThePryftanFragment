@@ -25,8 +25,9 @@ public class Connector
   ConnectionTypeEnum connectionType;
   DataDirectionEnum direction;
   OrientationEnum orientation;
+  color _color;
 
-  public Connector(Box box, ConnectionTypeEnum type, int relX, int relY, OrientationEnum orientation, DataDirectionEnum direction)
+  public Connector(Box box, ConnectionTypeEnum type, int relX, int relY, OrientationEnum orientation, DataDirectionEnum direction, color theColor)
   {
     theBox = box;
     connectionType = type;
@@ -34,6 +35,7 @@ public class Connector
     relativeY = relY;
     this.orientation = orientation;
     this.direction = direction;
+    this._color = theColor;
   }
 
   public void transferItem(IPayload payload)

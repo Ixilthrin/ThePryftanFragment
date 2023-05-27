@@ -24,9 +24,9 @@ public class Box
   }
 
   // Relative position to this Box
-  public void addConnector(ConnectionTypeEnum type, Point point, OrientationEnum orientation, DataDirectionEnum direction)
+  public void addConnector(ConnectionTypeEnum type, Point point, OrientationEnum orientation, DataDirectionEnum direction, color theColor)
   {
-    connectors.add(new Connector(this, type, point.x, point.y, orientation, direction));
+    connectors.add(new Connector(this, type, point.x, point.y, orientation, direction, theColor));
   }
 
   public boolean send(Connector connector, IPayload payload)
@@ -59,6 +59,8 @@ public class Box
 
     for (int i = 0; i < connectors.size(); ++i)
     {
+      fill(connectors.get(i)._color);
+      stroke(180, 180, 180);
       rect(connectors.get(i).relativeX + this.x, connectors.get(i).relativeY + this.y, 10, 10);
     }
   }

@@ -30,8 +30,8 @@ public class CodeBox implements ISceneObject, IKeyboardListener
     PImage image = loadImage("code.png");
     theBox = new Box(x, y, ComponentProps.FunctionBoxWidth, ComponentProps.FunctionBoxHeight, image);
     theBox.theProvider = this;
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(-10, 0), OrientationEnum.West, DataDirectionEnum.Input);
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Output);
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(-10, 0), OrientationEnum.West, DataDirectionEnum.Input, color(255, 165, 0));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Output, color(255, 165, 0));
     textInput = new TextInputBox(x + 5, y + 20, ComponentProps.FunctionBoxWidth - 10);
   }
 
@@ -121,7 +121,7 @@ public class NaturalDeposit implements ISceneObject
     }
     theBox = new Box(x, y, ComponentProps.DepositWidth, ComponentProps.DepositHeight, image);
     theBox.theProvider = this;
-    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Output);
+    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Output, color(255, 165, 0));
   }
 
   public Box getBox()
@@ -190,7 +190,7 @@ public class WoodenBox implements ISceneObject
     PImage image = loadImage("wooden_box.png");
     theBox = new Box(x, y, ComponentProps.BoxWidth, ComponentProps.BoxHeight, image);
     theBox.theProvider = this;
-    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 10), OrientationEnum.West, DataDirectionEnum.Input);
+    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 10), OrientationEnum.West, DataDirectionEnum.Input, color(255, 165, 0));
   }
 
   public Box getBox()
@@ -290,8 +290,8 @@ public class CoalPoweredMiningDrill implements ISceneObject
     PImage image = loadImage("coal_powered_mining_drill.png");
     theBox = new Box(x, y, ComponentProps.DrillWidth, ComponentProps.DrillHeight, image);
     theBox.theProvider = this;
-    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 10), OrientationEnum.West, DataDirectionEnum.Input);
-    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(theBox.width, 10), OrientationEnum.East, DataDirectionEnum.Output);
+    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 10), OrientationEnum.West, DataDirectionEnum.Input, color(255, 165, 0));
+    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(theBox.width, 10), OrientationEnum.East, DataDirectionEnum.Output, color(255, 165, 0));
   }
 
   public Box getBox()
@@ -427,9 +427,9 @@ public class StoneFurnace implements ISceneObject
     image_running = loadImage("stone_furnace_running.png");
     theBox = new Box(x, y, ComponentProps.StoneFurnaceWidth, ComponentProps.StoneFurnaceHeight, image);
     theBox.theProvider = this;
-    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 0), OrientationEnum.West, DataDirectionEnum.Input);
-    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 30), OrientationEnum.West, DataDirectionEnum.Input);
-    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(theBox.width, 20), OrientationEnum.East, DataDirectionEnum.Output);
+    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 0), OrientationEnum.West, DataDirectionEnum.Input, color(255, 165, 0));
+    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(-10, 30), OrientationEnum.West, DataDirectionEnum.Input, color(255, 165, 0));
+    theBox.addConnector(ConnectionTypeEnum.TransportBelt, new Point(theBox.width, 20), OrientationEnum.East, DataDirectionEnum.Output, color(255, 165, 0));
   }
 
   public Box getBox()
@@ -557,8 +557,8 @@ public class IBM704 implements ISceneObject
     theBox = new Box(x, y, 140, 160, image);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Twoway);
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, 160), OrientationEnum.South, DataDirectionEnum.Input);
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, 160), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
   }
 
   public IBM704(Box box)
@@ -735,8 +735,8 @@ public class PowerSupply implements ISceneObject
     powerImageOn = loadImage("power_supply.png");
     theBox = new Box(x, y, ComponentProps.PowerSupplyWidth, ComponentProps.PowerSupplyHeight, powerImageOff);
     theBox.theProvider = this;
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(69, 10), OrientationEnum.East, DataDirectionEnum.Output);
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(69, 30), OrientationEnum.East, DataDirectionEnum.Output);
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(69, 10), OrientationEnum.East, DataDirectionEnum.Output, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(69, 30), OrientationEnum.East, DataDirectionEnum.Output, color(0, 0, 0));
   }
 
   public PowerSupply(Box box)
