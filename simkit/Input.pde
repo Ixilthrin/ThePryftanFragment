@@ -45,11 +45,11 @@ void mouseClicked()
   int x = mouseX;
   int y = mouseY;
 
-  if (app_global.selectionBox.contains(x, y))
-  {
-    app_global.selectionBox.clicked(x, y);
-    return;
-  }
+  //if (app_global.selectionBox.contains(x, y))
+  //{
+  //  app_global.selectionBox.clicked(x, y);
+  //  return;
+  //}
 
   //if (app_global.textBox.contains(x, y))
   //{
@@ -57,7 +57,7 @@ void mouseClicked()
   // return;
   //}
 
-  app_global.inputFocus = null;
+  //app_global.inputFocus = null;
 
 
   if (app_global.mutableState.isHoldingWire)
@@ -169,15 +169,14 @@ void mouseMoved()
 
 void keyPressed()
 {
-
-  for (int i = 0; i < app_global.getScene().size(); ++i)
-  {
-    ISceneObject sceneObject = app_global.getScene().get(i);
-    if (sceneObject instanceof IKeyboardListener && app_global.inputFocus == ((CodeBox)sceneObject).textInput)
-    {
-      ((IKeyboardListener)sceneObject).keyPress(key);
-      return;
-    }
-  }
+  //for (int i = 0; i < app_global.getScene().size(); ++i)
+  //{
+    //ISceneObject sceneObject = app_global.getScene().get(i);
+    //if (sceneObject instanceof IKeyboardListener && app_global.inputFocus == ((CodeBox)sceneObject).textInput)
+    //{
+    //  ((IKeyboardListener)sceneObject).keyPress(key);
+     // return;
+    //}
+  //}
   println((int)key);
 }

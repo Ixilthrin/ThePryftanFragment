@@ -24,6 +24,7 @@ public class Anchor implements ISceneObject
   Connector north;
   Connector east;
   Connector south;
+  color unconnectedColor = color(150, 150, 150);
 
   public Anchor(int x, int y)
   {
@@ -31,10 +32,10 @@ public class Anchor implements ISceneObject
     theBox = new Box(x, y, 30, 30, image);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.Any, new Point(0, 10), OrientationEnum.West, DataDirectionEnum.Twoway, color(150, 150, 150));
-    theBox.addConnector(ConnectionTypeEnum.Any, new Point(10, 0), OrientationEnum.North, DataDirectionEnum.Twoway, color(150, 150, 150));
-    theBox.addConnector(ConnectionTypeEnum.Any, new Point(theBox.width - 10, 10), OrientationEnum.East, DataDirectionEnum.Twoway, color(150, 150, 150));
-    theBox.addConnector(ConnectionTypeEnum.Any, new Point(10, theBox.height - 10), OrientationEnum.South, DataDirectionEnum.Twoway, color(150, 150, 150));
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(0, 10), OrientationEnum.West, DataDirectionEnum.Twoway, unconnectedColor);
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(10, 0), OrientationEnum.North, DataDirectionEnum.Twoway, unconnectedColor);
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(theBox.width - 10, 10), OrientationEnum.East, DataDirectionEnum.Twoway, unconnectedColor);
+    theBox.addConnector(ConnectionTypeEnum.Any, new Point(10, theBox.height - 10), OrientationEnum.South, DataDirectionEnum.Twoway, unconnectedColor);
 
     west = theBox.connectors.get(0);
     north = theBox.connectors.get(1);
@@ -53,17 +54,16 @@ public class Anchor implements ISceneObject
     text.add("Anchor / Splitter / Booster");
     return text;
   }
-
-  public void update()
+  
+  public void connectionChanged()
   {
-        
     ConnectionTypeEnum connectionType = ConnectionTypeEnum.Any;
     for (int i = 0; i < theBox.connectors.size(); ++i)
     {
       Wire theWire = theBox.connectors.get(i).theWire;
       if (theWire != null && theWire.connectionType != ConnectionTypeEnum.Any)
       {
-        connectionType = theWire.connectionType; //<>//
+        connectionType = theWire.connectionType;
         break;
       }
     }
@@ -76,7 +76,7 @@ public class Anchor implements ISceneObject
       else if (connectionType == ConnectionTypeEnum.Power)
           _color = color(0, 0, 0);
           
-      west._color = _color; //<>//
+      west._color = _color;
       north._color = _color;
       east._color = _color;
       south._color = _color;
@@ -84,18 +84,20 @@ public class Anchor implements ISceneObject
     }
     else
     {
-      color _color = color(180, 180, 180);
-          
-      west._color = _color;
-      north._color = _color;
-      east._color = _color;
-      south._color = _color;
+      west._color = unconnectedColor;
+      north._color = unconnectedColor;
+      east._color = unconnectedColor;
+      south._color = unconnectedColor;
       
       west.connectionType = ConnectionTypeEnum.Any;
       north.connectionType = ConnectionTypeEnum.Any;
       east.connectionType = ConnectionTypeEnum.Any;
       south.connectionType = ConnectionTypeEnum.Any;
     }
+  }
+
+  public void update()
+  { //<>// //<>//
   }
 
   private void setConnectionType(ConnectionTypeEnum type)
@@ -179,6 +181,10 @@ public class CodeBox implements ISceneObject, IKeyboardListener
     ArrayList<String> text = new ArrayList<String>();
     return text;
   }
+  
+  public void connectionChanged()
+  {
+  }
 
   public void update()
   {
@@ -211,7 +217,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
   {
     if (textInput.contains(x, y))
     {
-      app_global.inputFocus = textInput;
+      //app_global.inputFocus = textInput;
       return true;
     }
     if (theBox.contains(x, y))
@@ -268,6 +274,10 @@ public class NaturalDeposit implements ISceneObject
     ArrayList<String> text = new ArrayList<String>();
     text.add(type + ": " + (int)amount);
     return text;
+  }
+  
+  public void connectionChanged()
+  {
   }
 
   public void update()
@@ -339,6 +349,10 @@ public class WoodenBox implements ISceneObject
     text.add("copper plates: " + copperPlates);
     text.add("stone: " + stone);
     return text;
+  }
+  
+  public void connectionChanged()
+  {
   }
 
   public void update()
@@ -437,6 +451,10 @@ public class CoalPoweredMiningDrill implements ISceneObject
   {
     ArrayList<String> text = new ArrayList<String>();
     return text;
+  }
+  
+  public void connectionChanged()
+  {
   }
 
   public void update()
@@ -579,6 +597,10 @@ public class StoneFurnace implements ISceneObject
     text.add("copper: " + copper);
     return text;
   }
+  
+  public void connectionChanged()
+  {
+  }
 
   public void update()
   {
@@ -684,15 +706,17 @@ public class IBM704 implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
+  int width = 120;
+  int height = 140;
 
   public IBM704(int x, int y)
   {
     PImage image = loadImage("panel.jpg");
-    theBox = new Box(x, y, 140, 160, image);
+    theBox = new Box(x, y, width, height, image);
     theBox.theProvider = this;
 
     theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, 160), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
   }
 
   public IBM704(Box box)
@@ -710,6 +734,10 @@ public class IBM704 implements ISceneObject
     ArrayList<String> text = new ArrayList<String>();
     text.add("power: " + (int)power);
     return text;
+  }
+  
+  public void connectionChanged()
+  {
   }
 
   public void update()
@@ -738,7 +766,7 @@ public class IBM704 implements ISceneObject
     {
       fill(255, 0, 0);
     }
-    rect(theBox.x + 40, theBox.y + 2, theBox.width - 42, 16);
+    rect(theBox.x + 35, theBox.y + 2, theBox.width - 38, 14);
   }
 
   public boolean select(int x, int y)
@@ -827,6 +855,10 @@ public class WireBundle implements ISceneObject, IWireSource
     text.add(type.toString());
     return text;
   }
+  
+  public void connectionChanged()
+  {
+  }
 
   public void update()
   {
@@ -890,6 +922,10 @@ public class PowerSupply implements ISceneObject
   {
     ArrayList<String> text = new ArrayList<String>();
     return text;
+  }
+  
+  public void connectionChanged()
+  {
   }
 
   public void update()

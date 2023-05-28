@@ -146,6 +146,7 @@ public class Box
               wire.end0 = connector;
               connector.theWire = wire;
               wire.calculatePoints();
+              theProvider.connectionChanged();
               return true;
             }
           }
@@ -156,6 +157,7 @@ public class Box
               wire.end1 = connector;
               connector.theWire = wire;
               wire.calculatePoints();
+              theProvider.connectionChanged();
               return true;
             }
           }
@@ -220,11 +222,13 @@ public class Box
           {
             wire.end1 = null;
             connector.theWire = null;
+            theProvider.connectionChanged();
             return wire;
           } else if (wire.end0 == connector)
           {
             wire.end0 = null;
             connector.theWire = null;
+            theProvider.connectionChanged();
             return wire;
           }
         }

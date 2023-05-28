@@ -3,6 +3,7 @@ public interface IBoxProvider
   Box getBox();
   boolean receive(IPayload payload, Connector source);
   boolean select(int x, int y);
+  void connectionChanged();
 }
 
 public interface IDrawable

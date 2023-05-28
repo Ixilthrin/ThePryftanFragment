@@ -131,6 +131,6 @@ public class TextSelectionBox implements MouseListener
     {
       text(strings.get(i), x + 5, y + 25 + 30 * i);
     }
-    text(app_global.selectionBox.selectedText, 800, 100);
+    //text(app_global.selectionBox.selectedText, 800, 100);
   }
 }

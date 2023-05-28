@@ -8,12 +8,10 @@ public class App
   int hoverDelay = 1000;
   int hoverTime = 0;
   int hoverStart = 0;
-  
 
   //TextInputBox textBox = new TextInputBox();
-  TextSelectionBox selectionBox = new TextSelectionBox();
-
-  TextInputBox inputFocus = null;
+  //TextSelectionBox selectionBox = new TextSelectionBox();
+  //TextInputBox inputFocus = null;
 
   public void setup()
   {
@@ -28,6 +26,25 @@ public class App
     font = createFont("Arial", 16, true); // Arial, 16 point, anti-aliasing on
 
     populateScene();
+  }
+
+  public void populateScene()
+  {
+    scene.add(new PowerSupply(50, 550));
+    scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
+    scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
+    scene.add(new IBM704(600, 300));
+    scene.add(new IBM704(600, 500));
+    scene.add(new IBM704(600, 700));
+    scene.add(new IBM704(800, 300));
+    scene.add(new IBM704(800, 500));
+    scene.add(new Anchor(1000, 70));
+    scene.add(new Anchor(1000, 90));
+    scene.add(new Anchor(1000, 110));
+    scene.add(new Anchor(1000, 130));
+    scene.add(new Anchor(1000, 150));
+    scene.add(new Anchor(1000, 170));
+    scene.add(new Anchor(1000, 190));
   }
 
   public void addWire(Wire wire)
@@ -95,6 +112,7 @@ public class App
     {
       mutableState.heldWire.draw();
     }
+    
     for (int i = 0; i < scene.wires.size(); ++i)
     {
       if (scene.wires.get(i).end0 != null || scene.wires.get(i).end1 != null)
@@ -105,9 +123,6 @@ public class App
     {
       scene.get(i).draw();
     }
-
-    //textBox.draw();
-    //selectionBox.draw();
 
     if (hover != null && hover.getHoverText().size() > 0 && mutableState.heldObject == null)
     {
@@ -133,25 +148,6 @@ public class App
         }
       }
     }
-  }
-
-  public void populateScene()
-  {
-    scene.add(new PowerSupply(50, 550));
-    scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
-    scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
-    scene.add(new IBM704(600, 300));
-    scene.add(new IBM704(600, 500));
-    scene.add(new IBM704(600, 700));
-    scene.add(new IBM704(800, 300));
-    scene.add(new IBM704(800, 500));
-    scene.add(new Anchor(1000, 70));
-    scene.add(new Anchor(1000, 90));
-    scene.add(new Anchor(1000, 110));
-    scene.add(new Anchor(1000, 130));
-    scene.add(new Anchor(1000, 150));
-    scene.add(new Anchor(1000, 170));
-    scene.add(new Anchor(1000, 190));
   }
 }
 
