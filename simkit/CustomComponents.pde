@@ -287,7 +287,7 @@ public class NaturalDeposit implements ISceneObject
     if (interval > 2000)
     {
       Connector connector = theBox.connectors.get(0);
-      ItemPayload payload = new ItemPayload(type, 20);
+      ItemPayload payload = new ItemPayload(type, 20, null);
       if (amount >= 20 && theBox.send(connector, payload))
       {
         amount -= 20;
@@ -464,7 +464,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
     if (interval > 2000 && coalReserve > 20)
     {
       Connector connector = theBox.connectors.get(1);
-      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Coal, 20)))
+      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Coal, 20, null)))
       {
         coalReserve -= 20;
       }
@@ -472,7 +472,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
     } else if (interval > 2000 && ironReserve > 20)
     {
       Connector connector = theBox.connectors.get(1);
-      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Iron, 20)))
+      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Iron, 20, null)))
       {
         ironReserve -= 20;
       }
@@ -480,7 +480,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
     } else if (interval > 2000 && copperReserve > 20)
     {
       Connector connector = theBox.connectors.get(1);
-      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Copper, 20)))
+      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Copper, 20, null)))
       {
         copperReserve -= 20;
       }
@@ -488,7 +488,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
     } else if (interval > 2000 && stoneReserve > 20)
     {
       Connector connector = theBox.connectors.get(1);
-      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Stone, 20)))
+      if (theBox.send(connector, new ItemPayload(ItemTypeEnum.Stone, 20, null)))
       {
         stoneReserve -= 20;
       }
@@ -625,7 +625,7 @@ public class StoneFurnace implements ISceneObject
         Connector connector = theBox.connectors.get(2);
         if (connector != null)
         {
-          theBox.send(connector, new ItemPayload(payloadType, wholePlates));
+          theBox.send(connector, new ItemPayload(payloadType, wholePlates, null));
           plates -= (float) wholePlates;
         }
       }
@@ -894,6 +894,7 @@ public class PowerSupply implements ISceneObject
   int previousUpdateTime;
   int interval = 0;
   float suppliedPowerPerTurn = 20;
+  PImage electricityImage = loadImage("electricity.png");
 
   public PowerSupply(int x, int y)
   {
@@ -937,9 +938,9 @@ public class PowerSupply implements ISceneObject
       if (interval > 2000)
       {
         Connector connector = theBox.connectors.get(0);
-        theBox.send(connector, new ItemPayload(ItemTypeEnum.Electricity, (int)suppliedPowerPerTurn));
+        theBox.send(connector, new ItemPayload(ItemTypeEnum.Electricity, (int)suppliedPowerPerTurn, electricityImage));
         connector = theBox.connectors.get(1);
-        theBox.send(connector, new ItemPayload(ItemTypeEnum.Electricity, (int)suppliedPowerPerTurn));
+        theBox.send(connector, new ItemPayload(ItemTypeEnum.Electricity, (int)suppliedPowerPerTurn, electricityImage));
         interval = 0;
       }
     }

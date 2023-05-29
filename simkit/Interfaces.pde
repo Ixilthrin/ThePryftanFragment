@@ -24,6 +24,7 @@ public interface IWireSource
 
 public interface IPayload
 {
+  PImage getImage();
 }
 
 public interface IKeyboardListener

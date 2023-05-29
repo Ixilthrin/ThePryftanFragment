@@ -2,16 +2,27 @@
 class CommandPayload implements IPayload
 {
   CommandTypeEnum type;
+  PImage image = loadImage("click_button.png");
+  public PImage getImage()
+  {
+    return image;
+  }
 }
 
 class ItemPayload implements IPayload
 {
   ItemTypeEnum type;
   int quantity;
-  public ItemPayload(ItemTypeEnum type, int quantity)
+  PImage image;
+  public ItemPayload(ItemTypeEnum type, int quantity, PImage image)
   {
     this.type = type;
     this.quantity = quantity;
+    this.image = image;
+  }
+  public PImage getImage()
+  {
+    return image;
   }
 }
 
@@ -49,7 +60,6 @@ public class Connector
 
 public class Wire implements IDrawable
 {
-
   Connector end0;
   Connector end1;
   ArrayList<Point> points;
@@ -185,7 +195,7 @@ public class Wire implements IDrawable
 
     // This is a simulation that should not depend on the distance between boxes
     // so speed is proportional to the length of the wire.
-    speed = .002f;
+    speed = .001f;
   }
 
   Point getBezierPoint(OrientationEnum originDirection, int originX, int originY, OrientationEnum targetDirection, int targetX, int targetY, float t)
@@ -306,7 +316,14 @@ public class Wire implements IDrawable
       }
       stroke(0, 0, 0);
       fill(0, 0, 0);
-      ellipse(points.get(payloadIndex).x, points.get(payloadIndex).y, size, size);
+      PImage image = payload.getImage();
+      if (image != null)
+      {
+        image(image, points.get(payloadIndex).x - 25, points.get(payloadIndex).y - 25, 50, 50);
+      } else
+      {
+        ellipse(points.get(payloadIndex).x, points.get(payloadIndex).y, size, size);
+      }
     }
   }
 }
