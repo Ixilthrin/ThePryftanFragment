@@ -32,6 +32,7 @@ public class App
   {
     scene.add(new PowerSupply(50, 550));
     scene.add(new PowerSupply(50, 450));
+    scene.add(new PowerSupply(50, 350));
     scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
     scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
     scene.add(new WireBundle(350, 700, ConnectionTypeEnum.HDMI));
