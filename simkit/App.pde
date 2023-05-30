@@ -31,6 +31,7 @@ public class App
   public void populateScene()
   {
     scene.add(new PowerSupply(50, 550));
+    scene.add(new PowerSupply(50, 450));
     scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
     scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
     scene.add(new IBM704(600, 300));
@@ -39,6 +40,8 @@ public class App
     scene.add(new IBM704(800, 300));
     scene.add(new IBM704(800, 500));
     scene.add(new Anchor(1000, 70));
+    scene.add(new Anchor(1050, 90));
+    scene.add(new Anchor(1050, 70));
     scene.add(new Anchor(1000, 90));
     scene.add(new Anchor(1000, 110));
     scene.add(new Anchor(1000, 130));

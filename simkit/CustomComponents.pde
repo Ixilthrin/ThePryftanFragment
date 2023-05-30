@@ -28,7 +28,7 @@ public class Anchor implements ISceneObject
 
   public Anchor(int x, int y)
   {
-    PImage image = loadImage("anchor.png");
+    PImage image = loadImage("anchor-background.png");
     theBox = new Box(x, y, 30, 30, image);
     theBox.theProvider = this;
 

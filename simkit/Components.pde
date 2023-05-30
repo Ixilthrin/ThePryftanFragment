@@ -36,6 +36,9 @@ public class Connector
   ConnectionTypeEnum connectionType;
   DataDirectionEnum direction;
   OrientationEnum orientation;
+  PImage ethernetImage = loadImage("connector-blue.png");
+  PImage powerImage = loadImage("connector-black.png");
+  PImage anyImage = loadImage("connector-any.png");
   color _color;
 
   public Connector(Box box, ConnectionTypeEnum type, int relX, int relY, OrientationEnum orientation, DataDirectionEnum direction, color theColor)
@@ -55,6 +58,48 @@ public class Connector
     {
       theBox.receive(payload, this);
     }
+  }
+
+  public void draw(int x, int y)
+  {
+    pushMatrix();
+    if (orientation == OrientationEnum.East)
+    {
+      translate(relativeX + x, relativeY + y + 10);
+      rotate(-PI/2);
+    }
+    else if (orientation == OrientationEnum.North)
+    {
+      translate(relativeX + x + 10, relativeY + y + 10);
+      rotate(-PI);
+    }
+    else if (orientation == OrientationEnum.West)
+    {
+      translate(relativeX + x, relativeY + y + 10);
+      rotate(-PI/2);
+    }
+    else if (orientation == OrientationEnum.South)
+    {
+      translate(relativeX + x, relativeY + y);
+    }
+    
+    if (connectionType == ConnectionTypeEnum.Ethernet)
+    {
+      image(ethernetImage, 0, 0, 10, 10);
+    } else if (connectionType == ConnectionTypeEnum.Power)
+    {
+      //rotate(PI/2);
+      image(powerImage, 0, 0, 10, 10);
+    } else if (connectionType == ConnectionTypeEnum.Any)
+    {
+      image(anyImage, 0, 0, 10, 10);
+    } else
+    {
+      fill(_color);
+      stroke(180, 180, 180);
+      rect(relativeX + x, relativeY + y, 10, 10);
+    }
+    popMatrix();
   }
 }
 
@@ -319,7 +364,8 @@ public class Wire implements IDrawable
       PImage image = payload.getImage();
       if (image != null)
       {
-        image(image, points.get(payloadIndex).x - 25, points.get(payloadIndex).y - 25, 50, 50);
+        int imageSize = 30;
+        image(image, points.get(payloadIndex).x - imageSize/2, points.get(payloadIndex).y - imageSize/2, imageSize, imageSize);
       } else
       {
         ellipse(points.get(payloadIndex).x, points.get(payloadIndex).y, size, size);

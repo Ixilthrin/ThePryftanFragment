@@ -59,9 +59,7 @@ public class Box
 
     for (int i = 0; i < connectors.size(); ++i)
     {
-      fill(connectors.get(i)._color);
-      stroke(180, 180, 180);
-      rect(connectors.get(i).relativeX + this.x, connectors.get(i).relativeY + this.y, 10, 10);
+      connectors.get(i).draw(x, y);
     }
   }
 
