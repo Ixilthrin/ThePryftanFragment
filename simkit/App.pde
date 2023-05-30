@@ -34,11 +34,13 @@ public class App
     scene.add(new PowerSupply(50, 450));
     scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
     scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
-    scene.add(new IBM704(600, 300));
-    scene.add(new IBM704(600, 500));
-    scene.add(new IBM704(600, 700));
-    scene.add(new IBM704(800, 300));
-    scene.add(new IBM704(800, 500));
+    scene.add(new WireBundle(350, 700, ConnectionTypeEnum.HDMI));
+    scene.add(new WireBundle(500, 700, ConnectionTypeEnum.RadioSignal));
+    scene.add(new PrimaryController(600, 300));
+    scene.add(new TLP(600, 500));
+    scene.add(new CableBox(600, 700));
+    scene.add(new Monitor(800, 300));
+    scene.add(new IR(800, 500));
     scene.add(new Anchor(1000, 70));
     scene.add(new Anchor(1050, 90));
     scene.add(new Anchor(1050, 70));

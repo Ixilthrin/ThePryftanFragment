@@ -715,6 +715,7 @@ public class IBM704 implements ISceneObject
     theBox = new Box(x, y, width, height, image);
     theBox.theProvider = this;
 
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(-10, 0), OrientationEnum.West, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width, 0), OrientationEnum.East, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
   }
@@ -777,11 +778,12 @@ public class IBM704 implements ISceneObject
         return false;
       if (!isOn)
       {
-        isOn = true;
+        //isOn = true;
         return true;
       }
-      Connector connector = theBox.connectors.get(0);
-      return theBox.send(connector, new CommandPayload());
+      //Connector connector = theBox.connectors.get(0);
+      //return theBox.send(connector, new CommandPayload());
+      return true;
     }
     return false;
   }
@@ -816,6 +818,591 @@ public class IBM704 implements ISceneObject
   }
 }
 
+public class PrimaryController implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = 160;
+  int height = 80;
+
+  public PrimaryController(int x, int y)
+  {
+    PImage image = loadImage("primary-controller.png");
+    theBox = new Box(x, y, width, height, image);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-42, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-28, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-14, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+  }
+
+  public PrimaryController(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("power: " + (int)power);
+    return text;
+  }
+  
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+      isOn = false;
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+
+    if (isOn)
+    {
+      fill(0, 255, 0);
+    } else
+    {
+      fill(255, 0, 0);
+    }
+    ellipse(theBox.x + 5, theBox.y + height/2 - 10, 10, 10);
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      if (power < .0001)
+        return false;
+      if (!isOn)
+      {
+        isOn = true;
+        return true;
+      }
+      //Connector connector = theBox.connectors.get(1);
+      //theBox.send(connector, new CommandPayload());
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        power = quantity;
+        return true;
+      }
+    }
+
+    if (payload instanceof CommandPayload && isOn)
+    {
+      Connector connector = theBox.connectors.get(1);
+      theBox.send(connector, new CommandPayload());
+      return true;
+    }
+    return false;
+  }
+}
+
+public class TLP implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = 150;
+  int height = 100;
+    PImage image = loadImage("TLP.png");
+    PImage image_off = loadImage("TLP-off.png");
+
+  public TLP(int x, int y)
+  {
+    theBox = new Box(x, y, width, height, image_off);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-14, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+  }
+
+  public TLP(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("power: " + (int)power);
+    return text;
+  }
+  
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+    {
+      isOn = false;
+      theBox.image = image_off;
+    }
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+
+    if (isOn)
+    {
+      fill(0, 255, 0);
+    } else
+    {
+      fill(255, 0, 0);
+    }
+    rect(theBox.x + width /2 - 10, theBox.y + 2, 20, 8);
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      if (power < .0001)
+        return false;
+      if (!isOn)
+      {
+        isOn = true;
+        theBox.image = image;
+        return true;
+      }
+      Connector connector = theBox.connectors.get(0);
+      theBox.send(connector, new CommandPayload());
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        power = quantity;
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+public class CableBox implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = 160;
+  int height = 40;
+  PImage videoimage = loadImage("image_icon.png");
+
+  public CableBox(int x, int y)
+  {
+    PImage image = loadImage("cablebox.png");
+    theBox = new Box(x, y, width, height, image);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.HDMI, new Point(theBox.width-50, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RadioSignal, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+  }
+
+  public CableBox(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("power: " + (int)power);
+    return text;
+  }
+  
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+      isOn = false;
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+
+    if (isOn)
+    {
+      fill(0, 255, 0);
+    } else
+    {
+      fill(255, 0, 0);
+    }
+    
+    ellipse(theBox.x + 5, theBox.y + height - 10, 10, 10);
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      if (power < .0001)
+        return false;
+      if (!isOn)
+      {
+        isOn = true;
+        return true;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        power = quantity;
+        return true;
+      }
+    }
+    
+    if (!isOn)
+    return false;
+
+    if (payload instanceof CommandPayload)
+    {
+      Connector connector = theBox.connectors.get(0);
+      theBox.send(connector, new ItemPayload(ItemTypeEnum.Video, 1, videoimage));
+      return true;
+    }
+    return false;
+  }
+}
+
+public class Monitor implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = 216;
+  int height = 170;
+    PImage imageon = loadImage("monitor-on.png");
+    PImage imageoff = loadImage("monitor-off.png");
+
+  public Monitor(int x, int y)
+  {
+    theBox = new Box(x, y, width, height, imageoff);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.HDMI, new Point(20, height - 42), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height - 42), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+  }
+
+  public Monitor(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("power: " + (int)power);
+    return text;
+  }
+  
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+    {
+      isOn = false;
+      theBox.image = imageoff;
+    }
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+
+    if (isOn)
+    {
+    } else
+    {
+      theBox.image = imageoff;
+    }
+    theBox.draw();
+    if (isOn)
+    {
+      fill(0, 255, 0);
+    } else
+    {
+      fill(255, 0, 0);
+    }
+    
+    
+    rect(theBox.x + width - 14, theBox.y + height - 48, 10, 5);
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      if (power < .0001)
+        return true;
+      if (!isOn)
+      {
+        isOn = true;
+        return true;
+      }
+      else
+      {
+        isOn = false;
+        theBox.image = imageoff;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        power = quantity;
+        return true;
+      }
+    }
+
+    if (payload instanceof ItemPayload && isOn)
+    {
+      theBox.image = imageon;
+    }
+    return false;
+  }
+}
+
+public class IR implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = 50;
+  int height = 50;
+
+  public IR(int x, int y)
+  {
+    PImage image = loadImage("ir.png");
+    theBox = new Box(x, y, width, height, image);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.RadioSignal, new Point(20, height - 42), OrientationEnum.North, DataDirectionEnum.Output, color(255, 255, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(-5, height/2), OrientationEnum.West, DataDirectionEnum.Twoway, color(0, 0, 0));
+  }
+
+  public IR(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("power: " + (int)power);
+    return text;
+  }
+  
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+      isOn = false;
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+
+    if (isOn)
+    {
+      fill(0, 255, 0);
+    } else
+    {
+      fill(255, 0, 0);
+    }
+    rect(theBox.x + width - 15, theBox.y + height - 15, 5, 5);
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      if (power < .0001)
+        return false;
+      if (!isOn)
+      {
+        isOn = true;
+        return true;
+      }
+      else 
+      {
+        isOn = false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        power = quantity;
+        return true;
+      }
+    }
+
+    if (payload instanceof CommandPayload && isOn)
+    {
+      Connector connector = theBox.connectors.get(0);
+      theBox.send(connector, new CommandPayload());
+      return true;
+    }
+    return false;
+  }
+}
+
 public class WireBundle implements ISceneObject, IWireSource
 {
   Box theBox;
@@ -834,6 +1421,12 @@ public class WireBundle implements ISceneObject, IWireSource
     } else if (type == ConnectionTypeEnum.TransportBelt)
     {
       image = loadImage("transport_belt.png");
+    } else if (type == ConnectionTypeEnum.HDMI)
+    {
+      image = loadImage("hdmicable.png");
+    } else if (type == ConnectionTypeEnum.RadioSignal)
+    {
+      image = loadImage("radiosignal.png");
     }
     theBox = new Box(x, y, ComponentProps.WireWidth, ComponentProps.WireHeight, image);
     theBox.theProvider = this;

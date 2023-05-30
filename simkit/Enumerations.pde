@@ -11,7 +11,8 @@ enum ItemTypeEnum
     Copper,
     CopperPlate,
     StoneDeposit,
-    Stone
+    Stone,
+    Video
 }
 
 enum CommandTypeEnum
@@ -60,7 +61,9 @@ enum ConnectionTypeEnum
   None,
     Any,
     Ethernet,
+    HDMI,
     Power,
+    RadioSignal,
     TransportBelt
 }
 

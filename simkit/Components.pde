@@ -39,6 +39,8 @@ public class Connector
   PImage ethernetImage = loadImage("connector-blue.png");
   PImage powerImage = loadImage("connector-black.png");
   PImage anyImage = loadImage("connector-any.png");
+  PImage hdmiImage = loadImage("connector-green.png");
+  PImage radioImage = loadImage("connector-white.png");
   color _color;
 
   public Connector(Box box, ConnectionTypeEnum type, int relX, int relY, OrientationEnum orientation, DataDirectionEnum direction, color theColor)
@@ -75,8 +77,8 @@ public class Connector
     }
     else if (orientation == OrientationEnum.West)
     {
-      translate(relativeX + x, relativeY + y + 10);
-      rotate(-PI/2);
+      translate(relativeX + x + 10, relativeY + y);
+      rotate(PI/2);
     }
     else if (orientation == OrientationEnum.South)
     {
@@ -88,11 +90,16 @@ public class Connector
       image(ethernetImage, 0, 0, 10, 10);
     } else if (connectionType == ConnectionTypeEnum.Power)
     {
-      //rotate(PI/2);
       image(powerImage, 0, 0, 10, 10);
+    } else if (connectionType == ConnectionTypeEnum.HDMI)
+    {
+      image(hdmiImage, 0, 0, 10, 10);
     } else if (connectionType == ConnectionTypeEnum.Any)
     {
       image(anyImage, 0, 0, 10, 10);
+    } else if (connectionType == ConnectionTypeEnum.RadioSignal)
+    {
+      image(radioImage, 0, 0, 10, 10);
     } else
     {
       fill(_color);
@@ -342,6 +349,14 @@ public class Wire implements IDrawable
       int grayTint = 170;
       stroke(grayTint, grayTint, grayTint);
       fill(grayTint, grayTint, grayTint);
+    } else if (connectionType == ConnectionTypeEnum.HDMI)
+    {
+      stroke(20, 200, 20);
+      fill(20, 200, 20);
+    } else if (connectionType == ConnectionTypeEnum.RadioSignal)
+    {
+      stroke(255, 255, 255);
+      fill(255, 255, 255);
     }
 
     for (int i = 1; i < points.size(); ++i)
