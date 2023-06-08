@@ -64,6 +64,7 @@ enum ConnectionTypeEnum
     HDMI,
     Power,
     RadioSignal,
+    RS232Captive,
     TransportBelt
 }
 

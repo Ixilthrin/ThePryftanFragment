@@ -41,6 +41,7 @@ public class Connector
   PImage anyImage = loadImage("connector-any.png");
   PImage hdmiImage = loadImage("connector-green.png");
   PImage radioImage = loadImage("connector-white.png");
+  PImage rs232Image = loadImage("connector-yellow.png");
   color _color;
 
   public Connector(Box box, ConnectionTypeEnum type, int relX, int relY, OrientationEnum orientation, DataDirectionEnum direction, color theColor)
@@ -100,7 +101,10 @@ public class Connector
     } else if (connectionType == ConnectionTypeEnum.RadioSignal)
     {
       image(radioImage, 0, 0, 10, 10);
-    } else
+    } else if (connectionType == ConnectionTypeEnum.RS232Captive)
+    {
+      image(rs232Image, 0, 0, 10, 10);
+    }else
     {
       fill(_color);
       stroke(180, 180, 180);
@@ -357,6 +361,10 @@ public class Wire implements IDrawable
     {
       stroke(255, 255, 255);
       fill(255, 255, 255);
+    } else if (connectionType == ConnectionTypeEnum.RS232Captive)
+    {
+      stroke(255, 252, 49);
+      fill(255, 252, 49);
     }
 
     for (int i = 1; i < points.size(); ++i)

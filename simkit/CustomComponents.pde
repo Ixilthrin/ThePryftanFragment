@@ -179,6 +179,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("Code Box");
     return text;
   }
   
@@ -733,6 +734,7 @@ public class IBM704 implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("IBM 704");
     text.add("power: " + (int)power);
     return text;
   }
@@ -839,6 +841,7 @@ public class PrimaryController implements ISceneObject
     theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-28, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-14, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RS232Captive, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
   }
 
   public PrimaryController(Box box)
@@ -854,6 +857,7 @@ public class PrimaryController implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("Primary Controller");
     text.add("power: " + (int)power);
     return text;
   }
@@ -925,7 +929,7 @@ public class PrimaryController implements ISceneObject
 
     if (payload instanceof CommandPayload && isOn)
     {
-      Connector connector = theBox.connectors.get(1);
+      Connector connector = theBox.connectors.get(4);
       theBox.send(connector, new CommandPayload());
       return true;
     }
@@ -968,6 +972,7 @@ public class TLP implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("TLP");
     text.add("power: " + (int)power);
     return text;
   }
@@ -1080,6 +1085,7 @@ public class CableBox implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("Cable Box");
     text.add("power: " + (int)power);
     return text;
   }
@@ -1196,6 +1202,7 @@ public class Monitor implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("Display");
     text.add("power: " + (int)power);
     return text;
   }
@@ -1287,7 +1294,7 @@ public class Monitor implements ISceneObject
   }
 }
 
-public class IR implements ISceneObject
+public class IREmitter implements ISceneObject
 {
   Box theBox;
   public boolean isOn;
@@ -1298,7 +1305,7 @@ public class IR implements ISceneObject
   int width = 50;
   int height = 50;
 
-  public IR(int x, int y)
+  public IREmitter(int x, int y)
   {
     PImage image = loadImage("ir.png");
     theBox = new Box(x, y, width, height, image);
@@ -1306,10 +1313,10 @@ public class IR implements ISceneObject
 
     theBox.addConnector(ConnectionTypeEnum.RadioSignal, new Point(20, height - 42), OrientationEnum.North, DataDirectionEnum.Output, color(255, 255, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(-5, height/2), OrientationEnum.West, DataDirectionEnum.Twoway, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RS232Captive, new Point(-5, height/2), OrientationEnum.West, DataDirectionEnum.Twoway, color(0, 0, 0));
   }
 
-  public IR(Box box)
+  public IREmitter(Box box)
   {
     theBox = box;
   }
@@ -1322,6 +1329,7 @@ public class IR implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("IR Emitter");
     text.add("power: " + (int)power);
     return text;
   }
@@ -1427,6 +1435,9 @@ public class WireBundle implements ISceneObject, IWireSource
     } else if (type == ConnectionTypeEnum.RadioSignal)
     {
       image = loadImage("radiosignal.png");
+    } else if (type == ConnectionTypeEnum.RS232Captive)
+    {
+      image = loadImage("rs-232-captive-screw.png");
     }
     theBox = new Box(x, y, ComponentProps.WireWidth, ComponentProps.WireHeight, image);
     theBox.theProvider = this;
@@ -1515,6 +1526,7 @@ public class PowerSupply implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
+    text.add("Power Suplly");
     return text;
   }
   
