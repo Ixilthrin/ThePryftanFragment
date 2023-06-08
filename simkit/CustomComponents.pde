@@ -1684,6 +1684,7 @@ public class PowerSupply implements ISceneObject
       {
         theBox.image = powerImageOff;
         isOn = false;
+        timeSinceLastPowerDelivery = powerTimeInterval;
         return true;
       } else
       {
