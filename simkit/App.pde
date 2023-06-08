@@ -39,9 +39,10 @@ public class App
     scene.add(new WireBundle(200, 850, ConnectionTypeEnum.RadioSignal));
     scene.add(new WireBundle(350, 850, ConnectionTypeEnum.RS232Captive));
     scene.add(new PrimaryController(600, 300));
+    scene.add(new NetworkSwitch(600, 100));
     scene.add(new TLP(600, 500));
     scene.add(new CableBox(600, 700));
-    scene.add(new Monitor(800, 300));
+    scene.add(new Display(800, 300));
     scene.add(new IREmitter(800, 500));
     scene.add(new Anchor(1000, 70));
     scene.add(new Anchor(1050, 90));

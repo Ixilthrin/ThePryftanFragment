@@ -937,6 +937,122 @@ public class PrimaryController implements ISceneObject
   }
 }
 
+public class NetworkSwitch implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = 240;
+  int height = 40;
+
+  public NetworkSwitch(int x, int y)
+  {
+    PImage image = loadImage("network-switch.png");
+    theBox = new Box(x, y, width, height, image);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(100, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(115, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(130, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+  }
+
+  public NetworkSwitch(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("Network Switch");
+    text.add("power: " + (int)power);
+    return text;
+  }
+  
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+      isOn = false;
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+
+    if (isOn)
+    {
+      fill(0, 255, 0);
+    } else
+    {
+      fill(255, 0, 0);
+    }
+    ellipse(theBox.x + 5, theBox.y + height/2 - 10, 10, 10);
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      if (power < .0001)
+        return false;
+      if (!isOn)
+      {
+        isOn = true;
+        return true;
+      }
+      //Connector connector = theBox.connectors.get(1);
+      //theBox.send(connector, new CommandPayload());
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        power = quantity;
+        return true;
+      }
+    }
+
+    if (payload instanceof CommandPayload && isOn)
+    {
+      Connector connector = theBox.connectors.get(1);
+      theBox.send(connector, new CommandPayload());
+      return true;
+    }
+    return false;
+  }
+}
+
 public class TLP implements ISceneObject
 {
   Box theBox;
@@ -1167,7 +1283,7 @@ public class CableBox implements ISceneObject
   }
 }
 
-public class Monitor implements ISceneObject
+public class Display implements ISceneObject
 {
   Box theBox;
   public boolean isOn;
@@ -1180,7 +1296,7 @@ public class Monitor implements ISceneObject
     PImage imageon = loadImage("monitor-on.png");
     PImage imageoff = loadImage("monitor-off.png");
 
-  public Monitor(int x, int y)
+  public Display(int x, int y)
   {
     theBox = new Box(x, y, width, height, imageoff);
     theBox.theProvider = this;
@@ -1189,7 +1305,7 @@ public class Monitor implements ISceneObject
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height - 42), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
   }
 
-  public Monitor(Box box)
+  public Display(Box box)
   {
     theBox = box;
   }
@@ -1495,13 +1611,16 @@ public class PowerSupply implements ISceneObject
   public boolean isOn;
   PImage powerImageOff = null;
   PImage powerImageOn = null;
+  int powerTimeInterval = 5000;
   int previousUpdateTime;
-  int interval = 0;
-  float suppliedPowerPerTurn = 20;
+  int timeSinceLastPowerDelivery = 0;
+  float suppliedPowerPerTurn = 50;
   PImage electricityImage = loadImage("electricity.png");
 
   public PowerSupply(int x, int y)
   {
+    previousUpdateTime = powerTimeInterval;
+    timeSinceLastPowerDelivery = powerTimeInterval;
     powerImageOff = loadImage("power_supply_off.png");
     powerImageOn = loadImage("power_supply.png");
     theBox = new Box(x, y, ComponentProps.PowerSupplyWidth, ComponentProps.PowerSupplyHeight, powerImageOff);
@@ -1526,7 +1645,7 @@ public class PowerSupply implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
-    text.add("Power Suplly");
+    text.add("Power Supply");
     return text;
   }
   
@@ -1539,14 +1658,14 @@ public class PowerSupply implements ISceneObject
     int currentTime = millis();
     if (isOn)
     {
-      interval += currentTime - previousUpdateTime;
-      if (interval > 2000)
+      timeSinceLastPowerDelivery += currentTime - previousUpdateTime;
+      if (timeSinceLastPowerDelivery > powerTimeInterval)
       {
         Connector connector = theBox.connectors.get(0);
         theBox.send(connector, new ItemPayload(ItemTypeEnum.Electricity, (int)suppliedPowerPerTurn, electricityImage));
         connector = theBox.connectors.get(1);
         theBox.send(connector, new ItemPayload(ItemTypeEnum.Electricity, (int)suppliedPowerPerTurn, electricityImage));
-        interval = 0;
+        timeSinceLastPowerDelivery = 0;
       }
     }
     previousUpdateTime = currentTime;
