@@ -19,7 +19,7 @@ public class App
 
     scene = new Scene();
     mutableState.heldWire = new Wire(ConnectionTypeEnum.None);
-    backgroundImage = loadImage("workbench1600x1000.jpg");
+    backgroundImage = loadImage("workbench1600x1000.png");
     size(1600, 1000);  // for background must be exactly same as image
     //fullScreen();
     frameRate(60);
