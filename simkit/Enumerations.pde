@@ -12,12 +12,13 @@ enum ItemTypeEnum
     CopperPlate,
     StoneDeposit,
     Stone,
-    Video
+    Image
 }
 
 enum CommandTypeEnum
 {
   None,
+    Play,
     TogglePower
 }
 
@@ -64,7 +65,7 @@ enum ConnectionTypeEnum
     HDMI,
     Power,
     RadioSignal,
-    RS232Captive,
+    RS232CaptiveScrew,
     TransportBelt
 }
 

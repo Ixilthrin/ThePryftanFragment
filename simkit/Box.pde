@@ -36,8 +36,7 @@ public class Box
       Wire wire = connector.theWire;
       if (wire.isConnectedOnBothSides())
       {
-        wire.putItem(connector, payload);
-        return true;
+        return wire.putItem(connector, payload);
       }
     }
     return false;
@@ -110,22 +109,22 @@ public class Box
     return true;
   }
 
-  public boolean mouseClicked(int x, int y)
-  {
-    if (contains(x, y))
-    {
-      if (connectors.size() > 0)
-      {
-        Connector connector = connectors.get(0);
-        if (connector.theWire != null)
-        {
-          connector.theWire.putItem(connector, new CommandPayload());
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+  //public boolean mouseClicked(int x, int y)
+  //{
+  //  if (contains(x, y))
+  //  {
+  //    if (connectors.size() > 0)
+  //    {
+  //      Connector connector = connectors.get(0);
+  //      if (connector.theWire != null)
+  //      {
+  //        connector.theWire.putItem(connector, new CommandPayload(0));
+  //        return true;
+  //      }
+  //    }
+  //  }
+  //  return false;
+  //}
 
   public boolean tryConnectWire(Wire wire, int x, int y)
   {

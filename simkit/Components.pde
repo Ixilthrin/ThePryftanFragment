@@ -3,6 +3,48 @@ class CommandPayload implements IPayload
 {
   CommandTypeEnum type;
   PImage image = loadImage("click_button.png");
+  
+  int sourceMac;
+  int destinationMac;
+  
+  public CommandPayload(CommandTypeEnum type, int source, int destination)
+  {
+    this.type = type;
+    sourceMac = source;
+    destinationMac = destination;
+  }
+  
+  public PImage getImage()
+  {
+    return image;
+  }
+}
+
+class DriverCommandPayload implements IPayload
+{
+  CommandTypeEnum type;
+  PImage image = loadImage("steering-wheel.png");
+  public DriverCommandPayload()
+  {
+  }
+  
+  public PImage getImage()
+  {
+    return image;
+  }
+}
+
+class ImagePayload implements IPayload
+{
+  CommandTypeEnum type;
+  PImage image = loadImage("image_icon.png");
+  PImage payload;
+  
+  public ImagePayload(PImage payload)
+  {
+    this.payload = payload;
+  }
+  
   public PImage getImage()
   {
     return image;
@@ -13,16 +55,16 @@ class ItemPayload implements IPayload
 {
   ItemTypeEnum type;
   int quantity;
-  PImage image;
-  public ItemPayload(ItemTypeEnum type, int quantity, PImage image)
+  PImage icon;
+  public ItemPayload(ItemTypeEnum type, int quantity, PImage icon)
   {
     this.type = type;
     this.quantity = quantity;
-    this.image = image;
+    this.icon = icon;
   }
   public PImage getImage()
   {
-    return image;
+    return icon;
   }
 }
 
@@ -101,7 +143,7 @@ public class Connector
     } else if (connectionType == ConnectionTypeEnum.RadioSignal)
     {
       image(radioImage, 0, 0, 10, 10);
-    } else if (connectionType == ConnectionTypeEnum.RS232Captive)
+    } else if (connectionType == ConnectionTypeEnum.RS232CaptiveScrew)
     {
       image(rs232Image, 0, 0, 10, 10);
     }else
@@ -154,10 +196,10 @@ public class Wire implements IDrawable
   public boolean putItem(Connector origin, IPayload payload)
   {
     this.payload = payload;
-    int payloadIndex = getPayloadIndex(payloadProgress);
+    //int payloadIndex = getPayloadIndex(payloadProgress);
 
-    if (payloadIndex > 0 && payloadIndex < points.size() - 1)
-      return false;
+    //if (payloadIndex > 0 && payloadIndex < points.size() - 1)
+    //  return false; //<>//
 
     if (origin == end0)
     {
@@ -361,7 +403,7 @@ public class Wire implements IDrawable
     {
       stroke(255, 255, 255);
       fill(255, 255, 255);
-    } else if (connectionType == ConnectionTypeEnum.RS232Captive)
+    } else if (connectionType == ConnectionTypeEnum.RS232CaptiveScrew)
     {
       stroke(255, 252, 49);
       fill(255, 252, 49);
@@ -387,7 +429,7 @@ public class Wire implements IDrawable
       PImage image = payload.getImage();
       if (image != null)
       {
-        int imageSize = 30;
+        int imageSize = 40;
         image(image, points.get(payloadIndex).x - imageSize/2, points.get(payloadIndex).y - imageSize/2, imageSize, imageSize);
       } else
       {

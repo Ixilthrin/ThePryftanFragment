@@ -16,7 +16,7 @@ public class App
   public void setup()
   {
     surface.setTitle("Device Playground - An AV System Simulator");
-    
+
     scene = new Scene();
     mutableState.heldWire = new Wire(ConnectionTypeEnum.None);
     backgroundImage = loadImage("workbench1600x1000.jpg");
@@ -30,29 +30,29 @@ public class App
 
   public void populateScene()
   {
-    scene.add(new PowerSupply(50, 550));
-    scene.add(new PowerSupply(50, 450));
-    scene.add(new PowerSupply(50, 350));
+    scene.add(new PowerSupply(50, 100));
+    scene.add(new PowerSupply(50, 300));
+    scene.add(new PowerSupply(50, 500));
     scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
     scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
     scene.add(new WireBundle(350, 700, ConnectionTypeEnum.HDMI));
     scene.add(new WireBundle(200, 850, ConnectionTypeEnum.RadioSignal));
-    scene.add(new WireBundle(350, 850, ConnectionTypeEnum.RS232Captive));
-    scene.add(new PrimaryController(600, 300));
+    scene.add(new WireBundle(350, 850, ConnectionTypeEnum.RS232CaptiveScrew));
+    scene.add(new Controller(300, 300));
     scene.add(new NetworkSwitch(600, 100));
-    scene.add(new TLP(600, 500));
+    scene.add(new TLP(600, 300));
     scene.add(new CableBox(600, 700));
-    scene.add(new Display(800, 300));
-    scene.add(new IREmitter(800, 500));
-    scene.add(new Anchor(1000, 70));
-    scene.add(new Anchor(1050, 90));
-    scene.add(new Anchor(1050, 70));
-    scene.add(new Anchor(1000, 90));
-    scene.add(new Anchor(1000, 110));
-    scene.add(new Anchor(1000, 130));
-    scene.add(new Anchor(1000, 150));
-    scene.add(new Anchor(1000, 170));
-    scene.add(new Anchor(1000, 190));
+    scene.add(new Display(1000, 300));
+    scene.add(new IREmitter(900, 700));
+    scene.add(new Anchor(1400, 70));
+    scene.add(new Anchor(1450, 90));
+    scene.add(new Anchor(1450, 70));
+    scene.add(new Anchor(1400, 90));
+    scene.add(new Anchor(1400, 110));
+    scene.add(new Anchor(1400, 130));
+    scene.add(new Anchor(1400, 150));
+    scene.add(new Anchor(1400, 170));
+    scene.add(new Anchor(1400, 190));
   }
 
   public void addWire(Wire wire)
@@ -120,7 +120,7 @@ public class App
     {
       mutableState.heldWire.draw();
     }
-    
+
     for (int i = 0; i < scene.wires.size(); ++i)
     {
       if (scene.wires.get(i).end0 != null || scene.wires.get(i).end1 != null)
@@ -175,6 +175,17 @@ public class MutableState
   int mouseDownX = 0;
   int mouseDownY = 0;
   int oldMouseY = 0;
+}
+
+public static class MacAddressProvider
+{
+  private static int macAddressMax = 0;
+  
+  public static int getMac()
+  {
+    macAddressMax += 1;
+    return macAddressMax;
+  }
 }
 
 class Scene

@@ -1,4 +1,4 @@
-public static class ComponentProps //<>//
+public static class ComponentProps //<>// //<>// //<>// //<>//
 {
   public static int DepositWidth = 70;
   public static int DepositHeight = 70;
@@ -8,12 +8,25 @@ public static class ComponentProps //<>//
   public static int DrillHeight = 70;
   public static int StoneFurnaceWidth = 50;
   public static int StoneFurnaceHeight = 50;
-  public static int WireWidth = 80;
-  public static int WireHeight = 80;
-  public static int PowerSupplyWidth = 70;
-  public static int PowerSupplyHeight = 75;
+  public static int WireWidth = 100;
+  public static int WireHeight = 100;
+  public static int PowerSupplyWidth = 120;
+  public static int PowerSupplyHeight = 130;
   public static int FunctionBoxWidth = 250;
   public static int FunctionBoxHeight = 60;
+  public static int PowerTimeInterval = 5000;
+  public static int CableBoxWidth = 50;
+  public static int CableBoxHeight = 200;
+  public static int TLPWidth = 240;
+  public static int TLPHeight = 160;
+  public static int NetworkSwitchWidth = 304;
+  public static int NetworkSwitchHeight = 50;
+  public static int ControllerWidth = 230;
+  public static int ControllerHeight = 110;
+  public static int DisplayWidth = 300;
+  public static int DisplayHeight = 270;
+  public static int IREmitterWidth = 80;
+  public static int IREmitterHeight = 80;
 }
 
 
@@ -54,7 +67,7 @@ public class Anchor implements ISceneObject
     text.add("Anchor / Splitter / Booster");
     return text;
   }
-  
+
   public void connectionChanged()
   {
     ConnectionTypeEnum connectionType = ConnectionTypeEnum.Any;
@@ -72,23 +85,21 @@ public class Anchor implements ISceneObject
       setConnectionType(connectionType);
       color _color = color(0, 0, 0);
       if (connectionType == ConnectionTypeEnum.Ethernet)
-         _color = color(0, 0, 255);
+        _color = color(0, 0, 255);
       else if (connectionType == ConnectionTypeEnum.Power)
-          _color = color(0, 0, 0);
-          
+        _color = color(0, 0, 0);
+
       west._color = _color;
       north._color = _color;
       east._color = _color;
       south._color = _color;
-      
-    }
-    else
+    } else
     {
       west._color = unconnectedColor;
       north._color = unconnectedColor;
       east._color = unconnectedColor;
       south._color = unconnectedColor;
-      
+
       west.connectionType = ConnectionTypeEnum.Any;
       north.connectionType = ConnectionTypeEnum.Any;
       east.connectionType = ConnectionTypeEnum.Any;
@@ -97,7 +108,7 @@ public class Anchor implements ISceneObject
   }
 
   public void update()
-  { //<>// //<>//
+  {
   }
 
   private void setConnectionType(ConnectionTypeEnum type)
@@ -182,7 +193,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
     text.add("Code Box");
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -276,7 +287,7 @@ public class NaturalDeposit implements ISceneObject
     text.add(type + ": " + (int)amount);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -351,7 +362,7 @@ public class WoodenBox implements ISceneObject
     text.add("stone: " + stone);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -453,7 +464,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
     ArrayList<String> text = new ArrayList<String>();
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -598,7 +609,7 @@ public class StoneFurnace implements ISceneObject
     text.add("copper: " + copper);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -738,7 +749,7 @@ public class IBM704 implements ISceneObject
     text.add("power: " + (int)power);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -820,31 +831,34 @@ public class IBM704 implements ISceneObject
   }
 }
 
-public class PrimaryController implements ISceneObject
+public class Controller implements ISceneObject
 {
   Box theBox;
   public boolean isOn;
+  int mac;
 
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = 160;
-  int height = 80;
+  int width = ComponentProps.ControllerWidth;//160;
+  int height = ComponentProps.ControllerHeight;//80;
 
-  public PrimaryController(int x, int y)
+  public Controller(int x, int y)
   {
     PImage image = loadImage("primary-controller.png");
     theBox = new Box(x, y, width, height, image);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-42, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-28, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-14, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.75f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.83f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.91f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
-    theBox.addConnector(ConnectionTypeEnum.RS232Captive, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.RS232CaptiveScrew, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+
+    mac = MacAddressProvider.getMac();
   }
 
-  public PrimaryController(Box box)
+  public Controller(Box box)
   {
     theBox = box;
   }
@@ -857,11 +871,12 @@ public class PrimaryController implements ISceneObject
   public ArrayList<String> getHoverText()
   {
     ArrayList<String> text = new ArrayList<String>();
-    text.add("Primary Controller");
+    text.add("Controller");
+    text.add("MAC:  " + mac);
     text.add("power: " + (int)power);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -892,22 +907,14 @@ public class PrimaryController implements ISceneObject
     {
       fill(255, 0, 0);
     }
-    ellipse(theBox.x + 5, theBox.y + height/2 - 10, 10, 10);
+    ellipse(theBox.x + 10, theBox.y + .3f * height, 10, 10);
   }
 
   public boolean select(int x, int y)
   {
     if (theBox.contains(x, y))
     {
-      if (power < .0001)
-        return false;
-      if (!isOn)
-      {
-        isOn = true;
-        return true;
-      }
-      //Connector connector = theBox.connectors.get(1);
-      //theBox.send(connector, new CommandPayload());
+      isOn = !isOn;
       return true;
     }
     return false;
@@ -930,13 +937,19 @@ public class PrimaryController implements ISceneObject
     if (payload instanceof CommandPayload && isOn)
     {
       Connector connector = theBox.connectors.get(4);
-      theBox.send(connector, new CommandPayload());
+      theBox.send(connector, new DriverCommandPayload());
       return true;
     }
     return false;
   }
 }
 
+/*
+*   The behavior we are assuming here is that if a message is received then
+ *   we add source mac address to table.  If destination is unknown then we
+ *   broadcast the payload to each connection other than the incoming much
+ *   like a hub.
+ */
 public class NetworkSwitch implements ISceneObject
 {
   Box theBox;
@@ -945,8 +958,10 @@ public class NetworkSwitch implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = 240;
-  int height = 40;
+  int width = ComponentProps.NetworkSwitchWidth;
+  int height = ComponentProps.NetworkSwitchHeight;
+  int numberOfConnectors = 12;
+  int[] macAddresses = new int[numberOfConnectors + 1];  // for now ignore the 0th element, start index at 1 for the ethenet connections
 
   public NetworkSwitch(int x, int y)
   {
@@ -954,10 +969,14 @@ public class NetworkSwitch implements ISceneObject
     theBox = new Box(x, y, width, height, image);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(100, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(115, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(130, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    int cx = (int)(.36 * width);
+    for (int i = 1; i <= numberOfConnectors; ++i)
+    {
+      theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(cx, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+      macAddresses[i] = -1;  // Initialize each port to unknown mac address
+      cx += (int)(.05f * width);
+    }
   }
 
   public NetworkSwitch(Box box)
@@ -977,7 +996,7 @@ public class NetworkSwitch implements ISceneObject
     text.add("power: " + (int)power);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -1008,7 +1027,7 @@ public class NetworkSwitch implements ISceneObject
     {
       fill(255, 0, 0);
     }
-    ellipse(theBox.x + 5, theBox.y + height/2 - 10, 10, 10);
+    ellipse(theBox.x + 10, theBox.y + .7 * height, 10, 10);
   }
 
   public boolean select(int x, int y)
@@ -1016,14 +1035,12 @@ public class NetworkSwitch implements ISceneObject
     if (theBox.contains(x, y))
     {
       if (power < .0001)
-        return false;
-      if (!isOn)
       {
-        isOn = true;
+        isOn = false;
         return true;
       }
-      //Connector connector = theBox.connectors.get(1);
-      //theBox.send(connector, new CommandPayload());
+
+      isOn = !isOn;
       return true;
     }
     return false;
@@ -1045,11 +1062,53 @@ public class NetworkSwitch implements ISceneObject
 
     if (payload instanceof CommandPayload && isOn)
     {
-      Connector connector = theBox.connectors.get(1);
-      theBox.send(connector, new CommandPayload());
+      CommandPayload cPayload = (CommandPayload) payload;
+      int incomingPort = getInCommingPort(source);
+      macAddresses[incomingPort] = cPayload.sourceMac;
+      int destinationPort = getDestinationPort(cPayload.destinationMac);
+      if (destinationPort == -1)
+      {
+        for (int i = 1; i <= numberOfConnectors; ++i)
+        {
+          if (i != incomingPort)
+          {
+            Connector connector = theBox.connectors.get(i);
+            theBox.send(connector, payload);
+          }
+        }
+      } else
+      {
+        Connector connector = theBox.connectors.get(destinationPort);
+        theBox.send(connector, payload);
+      }
       return true;
     }
+
     return false;
+  }
+
+  private int getInCommingPort(Connector source)
+  {
+    for (int i = 1; i <= numberOfConnectors; ++i)
+    {
+      if (theBox.connectors.get(i) == source)
+      {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private int getDestinationPort(int destinationMac)
+  {
+    for (int i = 1; i <= numberOfConnectors; ++i)
+    {
+      if (macAddresses[i] == destinationMac)
+      {
+        return i;
+      }
+    }
+    return -1;
   }
 }
 
@@ -1057,14 +1116,15 @@ public class TLP implements ISceneObject
 {
   Box theBox;
   public boolean isOn;
+  int mac;
 
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = 150;
-  int height = 100;
-    PImage image = loadImage("TLP.png");
-    PImage image_off = loadImage("TLP-off.png");
+  int width = ComponentProps.TLPWidth;//150;
+  int height = ComponentProps.TLPHeight;//100;
+  PImage image = loadImage("TLP.png");
+  PImage image_off = loadImage("TLP-off.png");
 
   public TLP(int x, int y)
   {
@@ -1073,6 +1133,8 @@ public class TLP implements ISceneObject
 
     theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-14, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+
+    mac = MacAddressProvider.getMac();
   }
 
   public TLP(Box box)
@@ -1089,10 +1151,11 @@ public class TLP implements ISceneObject
   {
     ArrayList<String> text = new ArrayList<String>();
     text.add("TLP");
+    text.add("MAC:  " + mac);
     text.add("power: " + (int)power);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -1142,7 +1205,8 @@ public class TLP implements ISceneObject
         return true;
       }
       Connector connector = theBox.connectors.get(0);
-      theBox.send(connector, new CommandPayload());
+      int destinationMac = 0;  // should be primary controller and configurable
+      theBox.send(connector, new CommandPayload(CommandTypeEnum.Play, mac, destinationMac));
       return true;
     }
     return false;
@@ -1161,6 +1225,7 @@ public class TLP implements ISceneObject
         return true;
       }
     }
+    
     return false;
   }
 }
@@ -1173,8 +1238,8 @@ public class CableBox implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = 160;
-  int height = 40;
+  int width = ComponentProps.CableBoxHeight;
+  int height = ComponentProps.CableBoxWidth;
   PImage videoimage = loadImage("image_icon.png");
 
   public CableBox(int x, int y)
@@ -1205,7 +1270,7 @@ public class CableBox implements ISceneObject
     text.add("power: " + (int)power);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -1236,21 +1301,15 @@ public class CableBox implements ISceneObject
     {
       fill(255, 0, 0);
     }
-    
-    ellipse(theBox.x + 5, theBox.y + height - 10, 10, 10);
+
+    ellipse(theBox.x + 10, theBox.y + height - 10, 10, 10);
   }
 
   public boolean select(int x, int y)
   {
     if (theBox.contains(x, y))
     {
-      if (power < .0001)
-        return false;
-      if (!isOn)
-      {
-        isOn = true;
-        return true;
-      }
+      isOn = !isOn;
       return true;
     }
     return false;
@@ -1269,14 +1328,17 @@ public class CableBox implements ISceneObject
         return true;
       }
     }
-    
-    if (!isOn)
-    return false;
 
-    if (payload instanceof CommandPayload)
+    if (!isOn)
+      return false;
+
+    if (payload instanceof DriverCommandPayload)
     {
       Connector connector = theBox.connectors.get(0);
-      theBox.send(connector, new ItemPayload(ItemTypeEnum.Video, 1, videoimage));
+
+      PImage image = loadImage("monitor-on.png");
+      ImagePayload iPayload = new ImagePayload(image);
+      theBox.send(connector, iPayload);
       return true;
     }
     return false;
@@ -1291,18 +1353,17 @@ public class Display implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = 216;
-  int height = 170;
-    PImage imageon = loadImage("monitor-on.png");
-    PImage imageoff = loadImage("monitor-off.png");
+  int width = ComponentProps.DisplayWidth;
+  int height = ComponentProps.DisplayHeight;
+  PImage imageoff = loadImage("monitor-off.png");
 
   public Display(int x, int y)
   {
     theBox = new Box(x, y, width, height, imageoff);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.HDMI, new Point(20, height - 42), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height - 42), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.HDMI, new Point(20, (int)(.76f * height)), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, (int)(.76f * height)), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
   }
 
   public Display(Box box)
@@ -1322,7 +1383,7 @@ public class Display implements ISceneObject
     text.add("power: " + (int)power);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -1362,9 +1423,9 @@ public class Display implements ISceneObject
     {
       fill(255, 0, 0);
     }
-    
-    
-    rect(theBox.x + width - 14, theBox.y + height - 48, 10, 5);
+
+
+    rect(theBox.x + width - 14, theBox.y + (int)(.73 * theBox.height), 10, 5);
   }
 
   public boolean select(int x, int y)
@@ -1377,8 +1438,7 @@ public class Display implements ISceneObject
       {
         isOn = true;
         return true;
-      }
-      else
+      } else
       {
         isOn = false;
         theBox.image = imageoff;
@@ -1402,9 +1462,10 @@ public class Display implements ISceneObject
       }
     }
 
-    if (payload instanceof ItemPayload && isOn)
+    if (payload instanceof ImagePayload && isOn)
     {
-      theBox.image = imageon;
+      ImagePayload iPayload = (ImagePayload)payload;
+      theBox.image = iPayload.payload;
     }
     return false;
   }
@@ -1418,8 +1479,8 @@ public class IREmitter implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = 50;
-  int height = 50;
+  int width = ComponentProps.IREmitterWidth;;
+  int height = ComponentProps.IREmitterHeight;
 
   public IREmitter(int x, int y)
   {
@@ -1427,9 +1488,9 @@ public class IREmitter implements ISceneObject
     theBox = new Box(x, y, width, height, image);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.RadioSignal, new Point(20, height - 42), OrientationEnum.North, DataDirectionEnum.Output, color(255, 255, 255));
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(20, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
-    theBox.addConnector(ConnectionTypeEnum.RS232Captive, new Point(-5, height/2), OrientationEnum.West, DataDirectionEnum.Twoway, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RadioSignal, new Point((int)(.4f * width), (int)(.2f * height)), OrientationEnum.North, DataDirectionEnum.Output, color(255, 255, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point((int)(.4f * width), (int)(.97f * height)), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RS232CaptiveScrew, new Point((int)(.002 * width), (int)(.6 * height)), OrientationEnum.West, DataDirectionEnum.Twoway, color(0, 0, 0));
   }
 
   public IREmitter(Box box)
@@ -1449,7 +1510,7 @@ public class IREmitter implements ISceneObject
     text.add("power: " + (int)power);
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -1480,7 +1541,7 @@ public class IREmitter implements ISceneObject
     {
       fill(255, 0, 0);
     }
-    rect(theBox.x + width - 15, theBox.y + height - 15, 5, 5);
+    rect(theBox.x + .71f * width, theBox.y + .71f * height, 6, 6);
   }
 
   public boolean select(int x, int y)
@@ -1493,8 +1554,7 @@ public class IREmitter implements ISceneObject
       {
         isOn = true;
         return true;
-      }
-      else 
+      } else
       {
         isOn = false;
       }
@@ -1517,10 +1577,10 @@ public class IREmitter implements ISceneObject
       }
     }
 
-    if (payload instanceof CommandPayload && isOn)
+    if (payload instanceof DriverCommandPayload && isOn)
     {
       Connector connector = theBox.connectors.get(0);
-      theBox.send(connector, new CommandPayload());
+      theBox.send(connector, payload);
       return true;
     }
     return false;
@@ -1551,7 +1611,7 @@ public class WireBundle implements ISceneObject, IWireSource
     } else if (type == ConnectionTypeEnum.RadioSignal)
     {
       image = loadImage("radiosignal.png");
-    } else if (type == ConnectionTypeEnum.RS232Captive)
+    } else if (type == ConnectionTypeEnum.RS232CaptiveScrew)
     {
       image = loadImage("rs-232-captive-screw.png");
     }
@@ -1575,7 +1635,7 @@ public class WireBundle implements ISceneObject, IWireSource
     text.add(type.toString());
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -1611,7 +1671,6 @@ public class PowerSupply implements ISceneObject
   public boolean isOn;
   PImage powerImageOff = null;
   PImage powerImageOn = null;
-  int powerTimeInterval = 5000;
   int previousUpdateTime;
   int timeSinceLastPowerDelivery = 0;
   float suppliedPowerPerTurn = 50;
@@ -1619,14 +1678,14 @@ public class PowerSupply implements ISceneObject
 
   public PowerSupply(int x, int y)
   {
-    previousUpdateTime = powerTimeInterval;
-    timeSinceLastPowerDelivery = powerTimeInterval;
+    previousUpdateTime = ComponentProps.PowerTimeInterval;
+    timeSinceLastPowerDelivery = ComponentProps.PowerTimeInterval;
     powerImageOff = loadImage("power_supply_off.png");
     powerImageOn = loadImage("power_supply.png");
     theBox = new Box(x, y, ComponentProps.PowerSupplyWidth, ComponentProps.PowerSupplyHeight, powerImageOff);
     theBox.theProvider = this;
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(69, 10), OrientationEnum.East, DataDirectionEnum.Output, color(0, 0, 0));
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(69, 30), OrientationEnum.East, DataDirectionEnum.Output, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(ComponentProps.PowerSupplyWidth - 2, 10), OrientationEnum.East, DataDirectionEnum.Output, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(ComponentProps.PowerSupplyWidth - 2, 40), OrientationEnum.East, DataDirectionEnum.Output, color(0, 0, 0));
   }
 
   public PowerSupply(Box box)
@@ -1648,7 +1707,7 @@ public class PowerSupply implements ISceneObject
     text.add("Power Supply");
     return text;
   }
-  
+
   public void connectionChanged()
   {
   }
@@ -1659,7 +1718,7 @@ public class PowerSupply implements ISceneObject
     if (isOn)
     {
       timeSinceLastPowerDelivery += currentTime - previousUpdateTime;
-      if (timeSinceLastPowerDelivery > powerTimeInterval)
+      if (timeSinceLastPowerDelivery > ComponentProps.PowerTimeInterval)
       {
         Connector connector = theBox.connectors.get(0);
         theBox.send(connector, new ItemPayload(ItemTypeEnum.Electricity, (int)suppliedPowerPerTurn, electricityImage));
@@ -1684,7 +1743,7 @@ public class PowerSupply implements ISceneObject
       {
         theBox.image = powerImageOff;
         isOn = false;
-        timeSinceLastPowerDelivery = powerTimeInterval;
+        timeSinceLastPowerDelivery = ComponentProps.PowerTimeInterval;
         return true;
       } else
       {
