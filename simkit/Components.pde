@@ -382,14 +382,13 @@ public class Wire implements IDrawable
 
   public void draw()
   {
+    color wireColor = color(0,0,0);
     if (connectionType == ConnectionTypeEnum.Ethernet)
     {
-      stroke(40, 40, 220);
-      fill(40, 40, 220);
+      wireColor = color(35, 68, 166);
     } else if (connectionType == ConnectionTypeEnum.Power)
     {
-      stroke(0, 0, 0);
-      fill(0, 0, 0);
+      wireColor = color(0, 0, 0);
     } else if (connectionType == ConnectionTypeEnum.TransportBelt)
     {
       int grayTint = 170;
@@ -397,21 +396,21 @@ public class Wire implements IDrawable
       fill(grayTint, grayTint, grayTint);
     } else if (connectionType == ConnectionTypeEnum.HDMI)
     {
-      stroke(20, 200, 20);
-      fill(20, 200, 20);
+      wireColor = color(45, 186, 59);
     } else if (connectionType == ConnectionTypeEnum.RadioSignal)
     {
-      stroke(255, 255, 255);
-      fill(255, 255, 255);
+      wireColor = color(200, 200, 200);
     } else if (connectionType == ConnectionTypeEnum.RS232CaptiveScrew)
     {
-      stroke(255, 252, 49);
-      fill(255, 252, 49);
+      wireColor = color(224, 224, 40);
     }
+    
+    stroke(wireColor);
+    fill(wireColor);
 
     for (int i = 1; i < points.size(); ++i)
     {
-      rect(points.get(i).x, points.get(i).y, 3, 3);
+      rect(points.get(i).x, points.get(i).y, 4, 4);
     }
 
     if (dataMovement != DataMovementEnum.None)
@@ -430,6 +429,13 @@ public class Wire implements IDrawable
       if (image != null)
       {
         int imageSize = 40;
+        if (connectionType == ConnectionTypeEnum.Power)
+        {
+            imageSize = 30;
+            if (app_global.mutableState.hidePower)
+                imageSize = 0;
+        }
+            
         image(image, points.get(payloadIndex).x - imageSize/2, points.get(payloadIndex).y - imageSize/2, imageSize, imageSize);
       } else
       {

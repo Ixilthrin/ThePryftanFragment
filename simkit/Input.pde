@@ -7,15 +7,23 @@ void mousePressed()
   int y = mouseY;
   app_global.mutableState.mouseDownX = x;
   app_global.mutableState.mouseDownY = y;
-  for (int i = 0; i < app_global.getScene().size(); ++i)
+  
+  ISceneObject objectToFront = null;
+  
+  for (int i = app_global.getScene().size() - 1; i >= 0 ; --i)
   {
     ISceneObject sceneObject = app_global.getScene().get(i);
     if (sceneObject.getBox().contains(x, y))
     {
       app_global.mutableState.heldObject = sceneObject;
+      objectToFront = sceneObject;
       break;
     }
   }
+  
+  if (objectToFront != null)
+      app_global.scene.bringToFront(objectToFront);
+  
 }
 
 void mouseReleased()
@@ -169,6 +177,9 @@ void mouseMoved()
 
 void keyPressed()
 {
+  if ((int)key == 112)
+      app_global.mutableState.hidePower = !app_global.mutableState.hidePower;
+      
   //for (int i = 0; i < app_global.getScene().size(); ++i)
   //{
     //ISceneObject sceneObject = app_global.getScene().get(i);

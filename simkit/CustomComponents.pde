@@ -1610,7 +1610,7 @@ public class WireBundle implements ISceneObject, IWireSource
       image = loadImage("hdmicable.png");
     } else if (type == ConnectionTypeEnum.RadioSignal)
     {
-      image = loadImage("radiosignal.png");
+      image = loadImage("radiosignal2.png");
     } else if (type == ConnectionTypeEnum.RS232CaptiveScrew)
     {
       image = loadImage("rs-232-captive-screw.png");
@@ -1674,7 +1674,7 @@ public class PowerSupply implements ISceneObject
   int previousUpdateTime;
   int timeSinceLastPowerDelivery = 0;
   float suppliedPowerPerTurn = 50;
-  PImage electricityImage = loadImage("electricity.png");
+  PImage electricityImage = loadImage("electricity3.png");
 
   public PowerSupply(int x, int y)
   {

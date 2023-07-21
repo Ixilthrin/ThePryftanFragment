@@ -19,10 +19,10 @@ public class App
 
     scene = new Scene();
     mutableState.heldWire = new Wire(ConnectionTypeEnum.None);
-    backgroundImage = loadImage("workbench1600x1000.png");
+    backgroundImage = loadImage("workbench1600x1000-3.png");
     size(1600, 1000);  // for background must be exactly same as image
     //fullScreen();
-    frameRate(60);
+    frameRate(30);
     font = createFont("Arial", 16, true); // Arial, 16 point, anti-aliasing on
 
     populateScene();
@@ -96,10 +96,9 @@ public class App
   public void draw()
   {
 
-    //clear();
+    clear();
     background(backgroundImage);
-    textFont(font, 24);
-    fill(0);
+    //background(181, 125, 65);
 
     String state = "";
     if (mutableState.isHoldingWire)
@@ -112,7 +111,9 @@ public class App
     {
       state = "Not Holding Wire";
     }
-    text(state, 250, 100);
+    textFont(font, 24);
+    fill(136, 47, 181);
+    text(state, 50, 50);
 
     update();
 
@@ -175,6 +176,7 @@ public class MutableState
   int mouseDownX = 0;
   int mouseDownY = 0;
   int oldMouseY = 0;
+  boolean hidePower = false;
 }
 
 public static class MacAddressProvider
@@ -208,5 +210,10 @@ class Scene
   public int size()
   {
     return list.size();
+  }
+  public void bringToFront(ISceneObject o)
+  {
+    list.remove(o);
+    list.add(o);
   }
 }
