@@ -1,4 +1,4 @@
-public static class ComponentProps //<>// //<>// //<>// //<>//
+public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>//
 {
   public static int DepositWidth = 70;
   public static int DepositHeight = 70;

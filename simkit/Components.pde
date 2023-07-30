@@ -1,19 +1,19 @@
-
+ //<>//
 class CommandPayload implements IPayload
 {
   CommandTypeEnum type;
   PImage image = loadImage("click_button.png");
-  
+
   int sourceMac;
   int destinationMac;
-  
+
   public CommandPayload(CommandTypeEnum type, int source, int destination)
   {
     this.type = type;
     sourceMac = source;
     destinationMac = destination;
   }
-  
+
   public PImage getImage()
   {
     return image;
@@ -27,7 +27,7 @@ class DriverCommandPayload implements IPayload
   public DriverCommandPayload()
   {
   }
-  
+
   public PImage getImage()
   {
     return image;
@@ -39,12 +39,12 @@ class ImagePayload implements IPayload
   CommandTypeEnum type;
   PImage image = loadImage("image_icon.png");
   PImage payload;
-  
+
   public ImagePayload(PImage payload)
   {
     this.payload = payload;
   }
-  
+
   public PImage getImage()
   {
     return image;
@@ -112,22 +112,19 @@ public class Connector
     {
       translate(relativeX + x, relativeY + y + 10);
       rotate(-PI/2);
-    }
-    else if (orientation == OrientationEnum.North)
+    } else if (orientation == OrientationEnum.North)
     {
       translate(relativeX + x + 10, relativeY + y + 10);
       rotate(-PI);
-    }
-    else if (orientation == OrientationEnum.West)
+    } else if (orientation == OrientationEnum.West)
     {
       translate(relativeX + x + 10, relativeY + y);
       rotate(PI/2);
-    }
-    else if (orientation == OrientationEnum.South)
+    } else if (orientation == OrientationEnum.South)
     {
       translate(relativeX + x, relativeY + y);
     }
-    
+
     if (connectionType == ConnectionTypeEnum.Ethernet)
     {
       image(ethernetImage, 0, 0, 10, 10);
@@ -146,7 +143,7 @@ public class Connector
     } else if (connectionType == ConnectionTypeEnum.RS232CaptiveScrew)
     {
       image(rs232Image, 0, 0, 10, 10);
-    }else
+    } else
     {
       fill(_color);
       stroke(180, 180, 180);
@@ -164,7 +161,6 @@ public class Wire implements IDrawable
 
   private float payloadProgress = 0f;
   private int millisSinceLastUpdate = 0;
-  float speed = 0f;
   private DataMovementEnum dataMovement = DataMovementEnum.None;
 
   IPayload payload;
@@ -199,7 +195,7 @@ public class Wire implements IDrawable
     //int payloadIndex = getPayloadIndex(payloadProgress);
 
     //if (payloadIndex > 0 && payloadIndex < points.size() - 1)
-    //  return false; //<>//
+    //  return false;
 
     if (origin == end0)
     {
@@ -293,7 +289,7 @@ public class Wire implements IDrawable
 
     // This is a simulation that should not depend on the distance between boxes
     // so speed is proportional to the length of the wire.
-    speed = .001f;
+    //speed = .05f;
   }
 
   Point getBezierPoint(OrientationEnum originDirection, int originX, int originY, OrientationEnum targetDirection, int targetX, int targetY, float t)
@@ -355,7 +351,7 @@ public class Wire implements IDrawable
     int deltaTime = currentTime - millisSinceLastUpdate;
     if (deltaTime == 0)
       return;
-    float progressIncrease = speed * (float)deltaTime;
+    float progressIncrease = app_global.mutableState.signalSpeed * (float)deltaTime;
     if (dataMovement != DataMovementEnum.None && payloadProgress < 1)
     {
       payloadProgress += progressIncrease;
@@ -382,7 +378,7 @@ public class Wire implements IDrawable
 
   public void draw()
   {
-    color wireColor = color(0,0,0);
+    color wireColor = color(0, 0, 0);
     if (connectionType == ConnectionTypeEnum.Ethernet)
     {
       wireColor = color(35, 68, 166);
@@ -404,7 +400,7 @@ public class Wire implements IDrawable
     {
       wireColor = color(224, 224, 40);
     }
-    
+
     stroke(wireColor);
     fill(wireColor);
 
@@ -412,10 +408,14 @@ public class Wire implements IDrawable
     {
       rect(points.get(i).x, points.get(i).y, 4, 4);
     }
+    
+    drawSignal();
+  }
 
-    if (dataMovement != DataMovementEnum.None)
+  public void drawSignal()
+  {
+    if (dataMovement != DataMovementEnum.None && app_global.mutableState.signalSpeed < app_global.mutableState.maxSpeed)
     {
-
       int payloadIndex = getPayloadIndex(payloadProgress);
       int size = 20;
       if (connectionType == ConnectionTypeEnum.TransportBelt)
@@ -431,11 +431,11 @@ public class Wire implements IDrawable
         int imageSize = 40;
         if (connectionType == ConnectionTypeEnum.Power)
         {
-            imageSize = 30;
-            if (app_global.mutableState.hidePower)
-                imageSize = 0;
+          imageSize = 30;
+          if (app_global.mutableState.hidePower)
+            imageSize = 0;
         }
-            
+
         image(image, points.get(payloadIndex).x - imageSize/2, points.get(payloadIndex).y - imageSize/2, imageSize, imageSize);
       } else
       {

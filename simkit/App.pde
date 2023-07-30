@@ -68,9 +68,10 @@ public class App
   public void update()
   {
     int my = mouseY;
+    int mx = mouseX;
 
     // Recalculate the connection line
-    if (mutableState.connectorUpdateRequested || (mutableState.isHoldingConnectedWire && mutableState.oldMouseY != my))
+    if (mutableState.connectorUpdateRequested || (mutableState.isHoldingConnectedWire && (mutableState.oldMouseY != my || mutableState.oldMouseX != mx)))
     {
       for (int i = 0; i < scene.wires.size(); ++i)
       {
@@ -78,6 +79,7 @@ public class App
       }
 
       mutableState.oldMouseY = my;
+      mutableState.oldMouseX = mx;
       mutableState.connectorUpdateRequested = false;
     }
     for (int i = 0; i < scene.wires.size(); ++i)
@@ -114,6 +116,8 @@ public class App
     textFont(font, 24);
     fill(136, 47, 181);
     text(state, 50, 50);
+    
+    text("Signal Speed: " + ((int)(app_global.mutableState.signalSpeed * 1000) + 1), 400, 50);
 
     update();
 
@@ -164,6 +168,8 @@ public class MutableState
 {
   Wire heldWire = null;
   ISceneObject heldObject = null;
+  float signalSpeed = .001f;
+  float maxSpeed= .014f;
 
   boolean isConnecting = false;
   boolean isDataTransferStarted = false;
@@ -176,6 +182,7 @@ public class MutableState
   int mouseDownX = 0;
   int mouseDownY = 0;
   int oldMouseY = 0;
+  int oldMouseX = 0;
   boolean hidePower = false;
 }
 

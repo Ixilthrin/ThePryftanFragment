@@ -180,6 +180,20 @@ void keyPressed()
   if ((int)key == 112)
       app_global.mutableState.hidePower = !app_global.mutableState.hidePower;
       
+  if ((int)key == 44)
+      app_global.mutableState.signalSpeed -= .0005;
+      
+  if ((int)key == 46)
+      app_global.mutableState.signalSpeed += .0005;
+      
+  if (app_global.mutableState.signalSpeed < .0005)
+      app_global.mutableState.signalSpeed = .0005;
+      
+  if (app_global.mutableState.signalSpeed > app_global.mutableState.maxSpeed)
+  {
+      app_global.mutableState.signalSpeed = app_global.mutableState.maxSpeed;
+  }
+      
   //for (int i = 0; i < app_global.getScene().size(); ++i)
   //{
     //ISceneObject sceneObject = app_global.getScene().get(i);
