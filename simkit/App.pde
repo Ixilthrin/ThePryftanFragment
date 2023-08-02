@@ -27,7 +27,7 @@ public class App
     size(1600, 1000);  // for background must be exactly same as image
     //fullScreen();
     frameRate(30);
-    font = createFont("Arial", 16, true); // Arial, 16 point, anti-aliasing on
+    font = createFont("Arial Bold", 16, true); // Arial, 16 point, anti-aliasing on
 
     populateScene();
   }
@@ -105,6 +105,13 @@ public class App
     clear();
     background(backgroundImage);
     //background(181, 125, 65);
+    
+    textFont(font, 24);
+    fill(193, 46, 23);
+    if (mutableState.isPaused)
+    {
+      text("PAUSED", 50, 50);
+    }
 
     String state = "";
     if (mutableState.isHoldingWire)
@@ -118,10 +125,12 @@ public class App
       state = "Not Holding Wire";
     }
     textFont(font, 24);
-    fill(136, 47, 181);
-    text(state, 50, 50);
+    text(state, 250, 50);
 
-    text("Signal Speed: " + ((int)(app_global.mutableState.signalSpeed * 1000) + 1), 400, 50);
+    text("Signal Speed: " + ((int)(app_global.mutableState.signalSpeed * 1000) + 1), 600, 50);
+
+    stroke(0, 0, 0);
+    fill(0, 0, 0);
 
     update();
 
@@ -188,6 +197,7 @@ public class MutableState
   int oldMouseY = 0;
   int oldMouseX = 0;
   boolean hidePower = false;
+  boolean isPaused = false;
 }
 
 public static class MacAddressProvider

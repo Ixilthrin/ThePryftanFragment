@@ -7,10 +7,10 @@ void mousePressed()
   int y = mouseY;
   app_global.mutableState.mouseDownX = x;
   app_global.mutableState.mouseDownY = y;
-  
+
   ISceneObject objectToFront = null;
-  
-  for (int i = app_global.getScene().size() - 1; i >= 0 ; --i)
+
+  for (int i = app_global.getScene().size() - 1; i >= 0; --i)
   {
     ISceneObject sceneObject = app_global.getScene().get(i);
     if (sceneObject.getBox().contains(x, y))
@@ -20,10 +20,9 @@ void mousePressed()
       break;
     }
   }
-  
+
   if (objectToFront != null)
-      app_global.scene.bringToFront(objectToFront);
-  
+    app_global.scene.bringToFront(objectToFront);
 }
 
 void mouseReleased()
@@ -178,30 +177,35 @@ void mouseMoved()
 void keyPressed()
 {
   if ((int)key == 112)
-      app_global.mutableState.hidePower = !app_global.mutableState.hidePower;
-      
+    app_global.mutableState.hidePower = !app_global.mutableState.hidePower;
+
   if ((int)key == 44)
-      app_global.mutableState.signalSpeed -= .0005;
-      
+    app_global.mutableState.signalSpeed -= .0005;
+
   if ((int)key == 46)
-      app_global.mutableState.signalSpeed += .0005;
-      
+    app_global.mutableState.signalSpeed += .0005;
+
   if (app_global.mutableState.signalSpeed < .0005)
-      app_global.mutableState.signalSpeed = .0005;
-      
+    app_global.mutableState.signalSpeed = .0005;
+
   if (app_global.mutableState.signalSpeed > app_global.mutableState.maxSpeed)
   {
-      app_global.mutableState.signalSpeed = app_global.mutableState.maxSpeed;
+    app_global.mutableState.signalSpeed = app_global.mutableState.maxSpeed;
   }
-      
+
+  if ((int)key == 32)
+  {
+    app_global.mutableState.isPaused = !app_global.mutableState.isPaused;
+  }
+
   //for (int i = 0; i < app_global.getScene().size(); ++i)
   //{
-    //ISceneObject sceneObject = app_global.getScene().get(i);
-    //if (sceneObject instanceof IKeyboardListener && app_global.inputFocus == ((CodeBox)sceneObject).textInput)
-    //{
-    //  ((IKeyboardListener)sceneObject).keyPress(key);
-     // return;
-    //}
+  //ISceneObject sceneObject = app_global.getScene().get(i);
+  //if (sceneObject instanceof IKeyboardListener && app_global.inputFocus == ((CodeBox)sceneObject).textInput)
+  //{
+  //  ((IKeyboardListener)sceneObject).keyPress(key);
+  // return;
+  //}
   //}
   println((int)key);
 }

@@ -200,10 +200,17 @@ public class CodeBox implements ISceneObject, IKeyboardListener
 
   public void update()
   {
-    textInput.x = theBox.x + 5;
-    textInput.y = theBox.y + 20;
+    //textInput.x = theBox.x + 5;
+    //textInput.y = theBox.y + 20;
+    
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
 
     int currentTime = millis();
+    
     interval += currentTime - previousUpdateTime;
     if (interval > 2000)
     {
@@ -294,6 +301,12 @@ public class NaturalDeposit implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
+    
     int currentTime = millis();
     interval += currentTime - previousUpdateTime;
     if (interval > 2000)
@@ -369,6 +382,12 @@ public class WoodenBox implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
+    
     int currentTime = millis();
     interval += currentTime - previousUpdateTime;
     if (interval > 2000)
@@ -472,6 +491,12 @@ public class CoalPoweredMiningDrill implements ISceneObject
   public void update()
   {
     int currentTime = millis();
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
+    
     interval += currentTime - previousUpdateTime;
     if (interval > 2000 && coalReserve > 20)
     {
@@ -616,6 +641,11 @@ public class StoneFurnace implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if ((iron >= 1 || copper >= 1) && coalPower > 1)
     {
@@ -756,6 +786,11 @@ public class IBM704 implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {
@@ -883,6 +918,11 @@ public class Controller implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {
@@ -1010,6 +1050,11 @@ public class NetworkSwitch implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {
@@ -1176,6 +1221,11 @@ public class TLP implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {
@@ -1298,6 +1348,11 @@ public class CableBox implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {
@@ -1418,6 +1473,11 @@ public class Display implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {
@@ -1554,6 +1614,11 @@ public class IREmitter implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {
@@ -1758,6 +1823,11 @@ public class PowerSupply implements ISceneObject
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
     int currentTime = millis();
     if (isOn)
     {

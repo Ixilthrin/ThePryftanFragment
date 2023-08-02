@@ -124,7 +124,7 @@ public class Connector
     {
       translate(relativeX + x, relativeY + y);
     }
-    
+
     if (connectionType == ConnectionTypeEnum.Ethernet)
     {
       image(ethernetImage, 0, 0, 10, 10);
@@ -160,7 +160,7 @@ public class Wire implements IDrawable
   ArrayList<Point> points;
 
   private float payloadProgress = 0f;
-  private int millisSinceLastUpdate = 0;
+  private int previousUpdateTime = 0;
   private DataMovementEnum dataMovement = DataMovementEnum.None;
 
   IPayload payload;
@@ -347,18 +347,24 @@ public class Wire implements IDrawable
 
   public void update()
   {
+    if (app_global.mutableState.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
+
     int currentTime = millis();
-    int deltaTime = currentTime - millisSinceLastUpdate;
+    int deltaTime = currentTime - previousUpdateTime;
     if (deltaTime == 0)
       return;
     float progressIncrease = app_global.mutableState.signalSpeed * (float)deltaTime;
     if (dataMovement != DataMovementEnum.None && payloadProgress < 1)
     {
       payloadProgress += progressIncrease;
-      millisSinceLastUpdate = currentTime;
+      previousUpdateTime = currentTime;
     } else
     {
-      millisSinceLastUpdate = currentTime;
+      previousUpdateTime = currentTime;
       payloadProgress = 0;
       if (dataMovement == DataMovementEnum.Forward && end1 != null)
       {
@@ -408,7 +414,7 @@ public class Wire implements IDrawable
     {
       rect(points.get(i).x, points.get(i).y, 4, 4);
     }
-    
+
     drawSignal();
   }
 
