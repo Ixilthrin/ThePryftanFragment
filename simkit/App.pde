@@ -8,6 +8,8 @@ public class App
   int hoverDelay = 1000;
   int hoverTime = 0;
   int hoverStart = 0;
+  PImage green_glow;
+  color red_led;
 
   //TextInputBox textBox = new TextInputBox();
   //TextSelectionBox selectionBox = new TextSelectionBox();
@@ -15,6 +17,8 @@ public class App
 
   public void setup()
   {
+    green_glow = loadImage("green_glow.png");
+    red_led = color(232, 21, 21);
     surface.setTitle("Device Playground - An AV System Simulator");
 
     scene = new Scene();
@@ -116,7 +120,7 @@ public class App
     textFont(font, 24);
     fill(136, 47, 181);
     text(state, 50, 50);
-    
+
     text("Signal Speed: " + ((int)(app_global.mutableState.signalSpeed * 1000) + 1), 400, 50);
 
     update();
@@ -189,7 +193,7 @@ public class MutableState
 public static class MacAddressProvider
 {
   private static int macAddressMax = 0;
-  
+
   public static int getMac()
   {
     macAddressMax += 1;

@@ -49,8 +49,6 @@ public class Box
 
   public void draw()
   {
-    fill(0, 0, 255);
-    stroke(0, 0, 255);
     image(image, x, y, width, height);
 
     fill(255, 165, 0);

@@ -902,12 +902,19 @@ public class Controller implements ISceneObject
 
     if (isOn)
     {
+      stroke(0, 255, 0);
       fill(0, 255, 0);
     } else
     {
-      fill(255, 0, 0);
+      stroke(app_global.red_led);
+      fill(app_global.red_led);
     }
     ellipse(theBox.x + 10, theBox.y + .3f * height, 10, 10);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x, theBox.y + .3f * height - 10, 20, 20);
+    }
   }
 
   public boolean select(int x, int y)
@@ -1022,12 +1029,19 @@ public class NetworkSwitch implements ISceneObject
 
     if (isOn)
     {
+      stroke(0, 255, 0);
       fill(0, 255, 0);
     } else
     {
-      fill(255, 0, 0);
+      stroke(app_global.red_led);
+      fill(app_global.red_led);
     }
     ellipse(theBox.x + 10, theBox.y + .7 * height, 10, 10);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x, theBox.y + height - 25, 20, 20);
+    }
   }
 
   public boolean select(int x, int y)
@@ -1184,12 +1198,19 @@ public class TLP implements ISceneObject
 
     if (isOn)
     {
+      stroke(0, 255, 0);
       fill(0, 255, 0);
     } else
     {
-      fill(255, 0, 0);
+      stroke(app_global.red_led);
+      fill(app_global.red_led);
     }
     rect(theBox.x + width /2 - 10, theBox.y + 2, 20, 8);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x + width /2 - 20, theBox.y - 2, 40, 18);
+    }
   }
 
   public boolean select(int x, int y)
@@ -1225,7 +1246,7 @@ public class TLP implements ISceneObject
         return true;
       }
     }
-    
+
     return false;
   }
 }
@@ -1296,13 +1317,20 @@ public class CableBox implements ISceneObject
 
     if (isOn)
     {
+      stroke(0, 255, 0);
       fill(0, 255, 0);
     } else
     {
-      fill(255, 0, 0);
+      stroke(app_global.red_led);
+      fill(app_global.red_led);
     }
 
     ellipse(theBox.x + 10, theBox.y + height - 10, 10, 10);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x, theBox.y + height - 20, 20, 20);
+    }
   }
 
   public boolean select(int x, int y)
@@ -1416,16 +1444,24 @@ public class Display implements ISceneObject
       theBox.image = imageoff;
     }
     theBox.draw();
+
     if (isOn)
     {
+      stroke(0, 255, 0);
       fill(0, 255, 0);
     } else
     {
-      fill(255, 0, 0);
+      stroke(app_global.red_led);
+      fill(app_global.red_led);
     }
 
 
     rect(theBox.x + width - 14, theBox.y + (int)(.73 * theBox.height), 10, 5);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x + width - 20, theBox.y + (int)(.73 * theBox.height) - 4, 25, 15);
+    }
   }
 
   public boolean select(int x, int y)
@@ -1479,7 +1515,8 @@ public class IREmitter implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = ComponentProps.IREmitterWidth;;
+  int width = ComponentProps.IREmitterWidth;
+  ;
   int height = ComponentProps.IREmitterHeight;
 
   public IREmitter(int x, int y)
@@ -1536,12 +1573,19 @@ public class IREmitter implements ISceneObject
 
     if (isOn)
     {
+      stroke(0, 255, 0);
       fill(0, 255, 0);
     } else
     {
-      fill(255, 0, 0);
+      stroke(app_global.red_led);
+      fill(app_global.red_led);
     }
     rect(theBox.x + .71f * width, theBox.y + .71f * height, 6, 6);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x + .71f * width - 3, theBox.y + .71f * height - 3, 15, 15);
+    }
   }
 
   public boolean select(int x, int y)

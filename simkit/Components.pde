@@ -124,7 +124,7 @@ public class Connector
     {
       translate(relativeX + x, relativeY + y);
     }
-
+    
     if (connectionType == ConnectionTypeEnum.Ethernet)
     {
       image(ethernetImage, 0, 0, 10, 10);
