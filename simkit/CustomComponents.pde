@@ -946,8 +946,8 @@ public class Controller implements ISceneObject
       fill(0, 255, 0);
     } else
     {
-      stroke(app_global.red_led);
-      fill(app_global.red_led);
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
     }
     ellipse(theBox.x + 10, theBox.y + .3f * height, 10, 10);
 
@@ -1078,8 +1078,8 @@ public class NetworkSwitch implements ISceneObject
       fill(0, 255, 0);
     } else
     {
-      stroke(app_global.red_led);
-      fill(app_global.red_led);
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
     }
     ellipse(theBox.x + 10, theBox.y + .7 * height, 10, 10);
 
@@ -1252,14 +1252,14 @@ public class TLP implements ISceneObject
       fill(0, 255, 0);
     } else
     {
-      stroke(app_global.red_led);
-      fill(app_global.red_led);
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
     }
-    rect(theBox.x + width /2 - 10, theBox.y + 2, 20, 8);
+    rect(theBox.x + width /2 - 10, theBox.y + height - 10, 20, 8);
 
     if (isOn)
     {
-      image(app_global.green_glow, theBox.x + width /2 - 20, theBox.y - 2, 40, 18);
+      image(app_global.green_glow, theBox.x + width /2 - 20, theBox.y + height - 14, 40, 18);
     }
   }
 
@@ -1376,8 +1376,8 @@ public class CableBox implements ISceneObject
       fill(0, 255, 0);
     } else
     {
-      stroke(app_global.red_led);
-      fill(app_global.red_led);
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
     }
 
     ellipse(theBox.x + 10, theBox.y + height - 10, 10, 10);
@@ -1511,8 +1511,8 @@ public class Display implements ISceneObject
       fill(0, 255, 0);
     } else
     {
-      stroke(app_global.red_led);
-      fill(app_global.red_led);
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
     }
 
 
@@ -1642,8 +1642,8 @@ public class IREmitter implements ISceneObject
       fill(0, 255, 0);
     } else
     {
-      stroke(app_global.red_led);
-      fill(app_global.red_led);
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
     }
     rect(theBox.x + .71f * width, theBox.y + .71f * height, 6, 6);
 

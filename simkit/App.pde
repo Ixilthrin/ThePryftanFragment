@@ -10,6 +10,7 @@ public class App
   int hoverStart = 0;
   PImage green_glow;
   color red_led;
+  color green_led_off;
 
   //TextInputBox textBox = new TextInputBox();
   //TextSelectionBox selectionBox = new TextSelectionBox();
@@ -19,6 +20,7 @@ public class App
   {
     green_glow = loadImage("green_glow.png");
     red_led = color(232, 21, 21);
+    green_led_off = color(19, 143, 65);
     surface.setTitle("Device Playground - An AV System Simulator");
 
     scene = new Scene();
