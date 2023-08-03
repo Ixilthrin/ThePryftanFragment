@@ -390,7 +390,7 @@ public class Wire implements IDrawable
       wireColor = color(35, 68, 166);
     } else if (connectionType == ConnectionTypeEnum.Power)
     {
-      wireColor = color(0, 0, 0);
+      wireColor = color(20, 20, 20, 150);
     } else if (connectionType == ConnectionTypeEnum.TransportBelt)
     {
       int grayTint = 170;
@@ -412,7 +412,7 @@ public class Wire implements IDrawable
 
     for (int i = 1; i < points.size(); ++i)
     {
-      rect(points.get(i).x, points.get(i).y, 4, 4);
+      rect(points.get(i).x, points.get(i).y, 3, 3);
     }
 
     drawSignal();
