@@ -1,4 +1,4 @@
-public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>//
+public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 {
   public static int DepositWidth = 70;
   public static int DepositHeight = 70;
@@ -12,6 +12,8 @@ public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>//
   public static int WireHeight = 100;
   public static int PowerSupplyWidth = 120;
   public static int PowerSupplyHeight = 130;
+  public static int PoeWidth = 100;
+  public static int PoeHeight = 110;
   public static int FunctionBoxWidth = 250;
   public static int FunctionBoxHeight = 60;
   public static int PowerTimeInterval = 5000;
@@ -202,7 +204,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
   {
     //textInput.x = theBox.x + 5;
     //textInput.y = theBox.y + 20;
-    
+
     if (app_global.mutableState.isPaused)
     {
       previousUpdateTime = millis();
@@ -210,7 +212,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
     }
 
     int currentTime = millis();
-    
+
     interval += currentTime - previousUpdateTime;
     if (interval > 2000)
     {
@@ -306,7 +308,7 @@ public class NaturalDeposit implements ISceneObject
       previousUpdateTime = millis();
       return;
     }
-    
+
     int currentTime = millis();
     interval += currentTime - previousUpdateTime;
     if (interval > 2000)
@@ -387,7 +389,7 @@ public class WoodenBox implements ISceneObject
       previousUpdateTime = millis();
       return;
     }
-    
+
     int currentTime = millis();
     interval += currentTime - previousUpdateTime;
     if (interval > 2000)
@@ -496,7 +498,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
       previousUpdateTime = millis();
       return;
     }
-    
+
     interval += currentTime - previousUpdateTime;
     if (interval > 2000 && coalReserve > 20)
     {
@@ -1873,5 +1875,77 @@ public class PowerSupply implements ISceneObject
   {
     isOn = !isOn;
     return true;
+  }
+}
+
+public class Poe implements ISceneObject
+{
+  Box theBox;
+  PImage powerImage = null;
+  PImage electricityImage = loadImage("electricity3.png");
+
+  public Poe(int x, int y)
+  {
+    powerImage = loadImage("poe.png");
+    theBox = new Box(x, y, ComponentProps.PoeWidth, ComponentProps.PoeHeight, powerImage);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(-10, 30), OrientationEnum.West, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width, 30), OrientationEnum.East, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(theBox.width / 2, theBox.height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("Power over ethernet");
+    return text;
+  }
+
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+  }
+
+  public boolean select(int x, int y)
+  {
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      theBox.send(theBox.connectors.get(0), payload);
+      return true;
+    }
+
+    if (payload instanceof CommandPayload)
+    {
+      Connector destination = null;
+      if (source == theBox.connectors.get(0))
+      {
+        destination = theBox.connectors.get(1);
+      } else
+      {
+        destination = theBox.connectors.get(0);
+      }
+      theBox.send(destination, payload);
+      return true;
+    }
+    return false;
   }
 }

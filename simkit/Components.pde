@@ -153,19 +153,26 @@ public class Connector
   }
 }
 
+class PayloadProgress
+{
+  IPayload payload;
+  float progress = 0f;
+  DataMovementEnum dataMovement = DataMovementEnum.None;
+}
+
 public class Wire implements IDrawable
 {
   Connector end0;
   Connector end1;
   ArrayList<Point> points;
 
-  private float payloadProgress = 0f;
+  int maxPayloadsOnWire = 10;
+  PayloadProgress payloads[] = new PayloadProgress[maxPayloadsOnWire];
+  int nextPayloadIndex = 0;  // index of payload to be used for new payload put on the wire
+
   private int previousUpdateTime = 0;
-  private DataMovementEnum dataMovement = DataMovementEnum.None;
 
-  IPayload payload;
-
-  PayloadDirectionEnum payloadDirection = PayloadDirectionEnum.None;
+  //PayloadDirectionEnum payloadDirection = PayloadDirectionEnum.None;
 
   ConnectionTypeEnum connectionType;
 
@@ -173,38 +180,48 @@ public class Wire implements IDrawable
   {
     connectionType = type;
     points = new ArrayList<Point>();
+    for (int i = 0; i < maxPayloadsOnWire; ++i)
+    {
+      payloads[i] = new PayloadProgress();
+    }
   }
 
-  private int getPayloadIndex(float progress)
+  // Get position on the curve for given progress value
+  private int getPayloadCurveIndex(float progress, int payloadIndex)
   {
-    int payloadIndex = (int)(progress * (float)points.size());
-    if (dataMovement == DataMovementEnum.Backward)
-      payloadIndex = points.size() - payloadIndex;
+    int payloadCurveIndex = (int)(progress * (float)points.size());
+    if (payloads[payloadIndex].dataMovement == DataMovementEnum.Backward)
+      payloadCurveIndex = points.size() - payloadCurveIndex;
 
-    if (payloadIndex < 0)
-      payloadIndex = 0;
-    if (payloadIndex > points.size() - 1)
-      payloadIndex = points.size() - 1;
+    if (payloadCurveIndex < 0)
+      payloadCurveIndex = 0;
+    if (payloadCurveIndex > points.size() - 1)
+      payloadCurveIndex = points.size() - 1;
 
-    return payloadIndex;
+    return payloadCurveIndex;
   }
 
+  // Put payload on the wire
   public boolean putItem(Connector origin, IPayload payload)
   {
-    this.payload = payload;
-    //int payloadIndex = getPayloadIndex(payloadProgress);
-
-    //if (payloadIndex > 0 && payloadIndex < points.size() - 1)
-    //  return false;
+    PayloadProgress payloadProgress = payloads[nextPayloadIndex];
+    payloadProgress.payload = payload;
 
     if (origin == end0)
     {
-      dataMovement = DataMovementEnum.Forward;
+      payloadProgress.progress = 0;
+      payloadProgress.dataMovement = DataMovementEnum.Forward;
     } else if (origin == end1)
     {
-      dataMovement = DataMovementEnum.Backward;
+      payloadProgress.progress = 0;
+      payloadProgress.dataMovement = DataMovementEnum.Backward;
     }
-    payloadProgress = 0;
+
+    nextPayloadIndex++;
+    if (nextPayloadIndex >= maxPayloadsOnWire)
+    {
+      nextPayloadIndex = 0;
+    }
     return true;
   }
 
@@ -357,29 +374,37 @@ public class Wire implements IDrawable
     int deltaTime = currentTime - previousUpdateTime;
     if (deltaTime == 0)
       return;
-    float progressIncrease = app_global.mutableState.signalSpeed * (float)deltaTime;
-    if (dataMovement != DataMovementEnum.None && payloadProgress < 1)
+
+    //if (nextPayloadNumber == 0)
+    //{
+
+    for (int i = 0; i < maxPayloadsOnWire; ++i)
     {
-      payloadProgress += progressIncrease;
-      previousUpdateTime = currentTime;
-    } else
-    {
-      previousUpdateTime = currentTime;
-      payloadProgress = 0;
-      if (dataMovement == DataMovementEnum.Forward && end1 != null)
+      PayloadProgress payloadProgress = payloads[i];
+      float progressIncrease = app_global.mutableState.signalSpeed * (float)deltaTime;
+      if (payloadProgress.dataMovement != DataMovementEnum.None && payloadProgress.progress < 1)
       {
-        end1.transferItem(payload);
-      } else if (dataMovement == DataMovementEnum.Backward && end0 != null)
+        payloadProgress.progress += progressIncrease;
+        previousUpdateTime = currentTime;
+      } else
       {
-        end0.transferItem(payload);
+        previousUpdateTime = currentTime;
+        payloadProgress.progress = 0;
+        if (payloadProgress.dataMovement == DataMovementEnum.Forward && end1 != null)
+        {
+          end1.transferItem(payloadProgress.payload);
+        } else if (payloadProgress.dataMovement == DataMovementEnum.Backward && end0 != null)
+        {
+          end0.transferItem(payloadProgress.payload);
+        }
+        payloadProgress.payload = null;
+        payloadProgress.dataMovement = DataMovementEnum.None;
       }
-      payload = null;
-      dataMovement = DataMovementEnum.None;
+      if (payloadProgress.progress < 0)
+        payloadProgress.progress = 0;
+      if (payloadProgress.progress > 1)
+        payloadProgress.progress = 1;
     }
-    if (payloadProgress < 0)
-      payloadProgress = 0;
-    if (payloadProgress > 1)
-      payloadProgress = 1;
   }
 
   public void draw()
@@ -420,32 +445,39 @@ public class Wire implements IDrawable
 
   public void drawSignal()
   {
-    if (dataMovement != DataMovementEnum.None && app_global.mutableState.signalSpeed < app_global.mutableState.maxSpeed)
+    for (int i = 0; i < maxPayloadsOnWire; ++i)
     {
-      int payloadIndex = getPayloadIndex(payloadProgress);
-      int size = 20;
-      if (connectionType == ConnectionTypeEnum.TransportBelt)
+      PayloadProgress payloadProgress = payloads[i];
+      if (payloadProgress.dataMovement != DataMovementEnum.None && app_global.mutableState.signalSpeed < app_global.mutableState.maxSpeed)
       {
+        int payloadIndex = getPayloadCurveIndex(payloadProgress.progress, i);
+        int size = 20;
+        if (connectionType == ConnectionTypeEnum.TransportBelt)
+        {
+          stroke(0, 0, 0);
+          fill(0, 0, 0);
+        }
         stroke(0, 0, 0);
         fill(0, 0, 0);
-      }
-      stroke(0, 0, 0);
-      fill(0, 0, 0);
-      PImage image = payload.getImage();
-      if (image != null)
-      {
-        int imageSize = 40;
-        if (connectionType == ConnectionTypeEnum.Power)
+        PImage image = payloadProgress.payload.getImage();
+        if (image != null)
         {
-          imageSize = 30;
-          if (app_global.mutableState.hidePower)
-            imageSize = 0;
-        }
+          int imageSize = 40;
+          if (payloadProgress.payload instanceof ItemPayload)
+          {
+            if (((ItemPayload)payloadProgress.payload).type == ItemTypeEnum.Electricity)
+            {
+              imageSize = 30;
+              if (app_global.mutableState.hidePower)
+                imageSize = 0;
+            }
+          }
 
-        image(image, points.get(payloadIndex).x - imageSize/2, points.get(payloadIndex).y - imageSize/2, imageSize, imageSize);
-      } else
-      {
-        ellipse(points.get(payloadIndex).x, points.get(payloadIndex).y, size, size);
+          image(image, points.get(payloadIndex).x - imageSize/2, points.get(payloadIndex).y - imageSize/2, imageSize, imageSize);
+        } else
+        {
+          ellipse(points.get(payloadIndex).x, points.get(payloadIndex).y, size, size);
+        }
       }
     }
   }

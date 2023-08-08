@@ -50,6 +50,7 @@ public class App
     scene.add(new CableBox(600, 700));
     scene.add(new Display(1000, 300));
     scene.add(new IREmitter(900, 700));
+    scene.add(new Poe(1100, 100));
     scene.add(new Anchor(1400, 70));
     scene.add(new Anchor(1450, 90));
     scene.add(new Anchor(1450, 70));
