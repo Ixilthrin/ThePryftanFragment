@@ -1,10 +1,72 @@
 void mousePressed()
 {
+  int x = mouseX;
+  int y = mouseY;
+
+
+
+  if (!app_global.mutableState.isHoldingWire && !app_global.mutableState.isHoldingConnectedWire)
+  {
+    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
+    {
+      ISceneObject sceneObject = app_global.getScene().get(i);
+      Wire wire = sceneObject.getBox().tryDisconnectWire(null, x, y);
+      if (wire != null)
+      {
+        app_global.mutableState.heldWire = wire;
+        app_global.mutableState.isHoldingConnectedWire = true;
+        app_global.mutableState.isConnecting = false;
+        return;
+      }
+      if (sceneObject.getBox().contains(x, y))
+      {
+        break;
+      }
+    }
+  }
+  
+  if (app_global.mutableState.isHoldingWire)
+  {
+    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
+    {
+      ISceneObject sceneObject = app_global.getScene().get(i);
+      if (sceneObject.getBox().tryConnectWire(app_global.mutableState.heldWire, x, y))
+      {
+        app_global.mutableState.isHoldingConnectedWire = true;
+        app_global.mutableState.isHoldingWire = false;
+        return;
+      }
+    }
+  }
+
+  if (app_global.mutableState.isHoldingConnectedWire)
+  {
+    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
+    {
+      ISceneObject sceneObject = app_global.getScene().get(i);
+      if (sceneObject.getBox().tryConnectWire(app_global.mutableState.heldWire, x, y))
+      {
+        app_global.mutableState.isConnecting = true;
+        app_global.mutableState.isHoldingConnectedWire = false;
+        return;
+      }
+      Wire wire = sceneObject.getBox().tryDisconnectWire(app_global.mutableState.heldWire, x, y);
+      if (wire != null)
+      {
+        app_global.mutableState.isConnecting = false;
+        app_global.mutableState.isHoldingConnectedWire = wire.isConnectedOnOnlyOneSide();
+        return;
+      }
+    }
+    return;
+  }
+  
+  
   if (app_global.mutableState.heldObject != null || app_global.mutableState.isHoldingConnectedWire || app_global.mutableState.isHoldingWire)
     return;
   app_global.mutableState.isMouseDown = true;
-  int x = mouseX;
-  int y = mouseY;
+  
+  
   app_global.mutableState.mouseDownX = x;
   app_global.mutableState.mouseDownY = y;
 
@@ -49,7 +111,7 @@ void mouseDragged()
 
 void mouseClicked()
 {
-
+println("clicked!");
   int x = mouseX;
   int y = mouseY;
 
@@ -67,63 +129,6 @@ void mouseClicked()
 
   //app_global.inputFocus = null;
 
-
-  if (app_global.mutableState.isHoldingWire)
-  {
-    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
-    {
-      ISceneObject sceneObject = app_global.getScene().get(i);
-      if (sceneObject.getBox().tryConnectWire(app_global.mutableState.heldWire, x, y))
-      {
-        app_global.mutableState.isHoldingConnectedWire = true;
-        app_global.mutableState.isHoldingWire = false;
-        return;
-      }
-    }
-  }
-
-  if (app_global.mutableState.isHoldingConnectedWire)
-  {
-    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
-    {
-      ISceneObject sceneObject = app_global.getScene().get(i);
-      if (sceneObject.getBox().tryConnectWire(app_global.mutableState.heldWire, x, y))
-      {
-        app_global.mutableState.isConnecting = true;
-        app_global.mutableState.isHoldingConnectedWire = false;
-        return;
-      }
-      Wire wire = sceneObject.getBox().tryDisconnectWire(app_global.mutableState.heldWire, x, y);
-      if (wire != null)
-      {
-        app_global.mutableState.isConnecting = false;
-        app_global.mutableState.isHoldingConnectedWire = wire.isConnectedOnOnlyOneSide();
-        return;
-      }
-    }
-    return;
-  }
-
-  if (!app_global.mutableState.isHoldingWire && !app_global.mutableState.isHoldingConnectedWire)
-  {
-    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
-    {
-      ISceneObject sceneObject = app_global.getScene().get(i);
-      Wire wire = sceneObject.getBox().tryDisconnectWire(null, x, y);
-      if (wire != null)
-      {
-        app_global.mutableState.heldWire = wire;
-        app_global.mutableState.isHoldingConnectedWire = true;
-        app_global.mutableState.isConnecting = false;
-        return;
-      }
-      if (sceneObject.getBox().contains(x, y))
-      {
-        break;
-      }
-    }
-  }
-
   if (!app_global.mutableState.isHoldingConnectedWire)
   {
 
@@ -133,7 +138,6 @@ void mouseClicked()
     {
       if (app_global.currentScene.get(i).select(x, y))
       {
-        println("selected = " + i);
         itemWasSelected = true;
         if (mouseButton == RIGHT)
         {
@@ -211,7 +215,7 @@ void mouseMoved()
 void keyPressed()
 {
 
-  if ((int)key == 10)
+  if ((int)key == 10 || (int)key == 9)  // enter or tab
   {
     if (!app_global.mutableState.isHoldingWire && !app_global.mutableState.isHoldingConnectedWire)
     {
@@ -225,13 +229,13 @@ void keyPressed()
     }
   }
 
-  if ((int)key == 112)
+  if ((int)key == 112)  // P key
     app_global.mutableState.hidePower = !app_global.mutableState.hidePower;
 
-  if ((int)key == 44)
+  if ((int)key == 44) // , key
     app_global.mutableState.signalSpeed -= .0005;
 
-  if ((int)key == 46)
+  if ((int)key == 46) // . key
     app_global.mutableState.signalSpeed += .0005;
 
   if (app_global.mutableState.signalSpeed < .0005)
@@ -242,7 +246,7 @@ void keyPressed()
     app_global.mutableState.signalSpeed = app_global.mutableState.maxSpeed;
   }
 
-  if ((int)key == 32)
+  if ((int)key == 32) // space
   {
     app_global.mutableState.isPaused = !app_global.mutableState.isPaused;
   }

@@ -23,7 +23,7 @@ public class App
     green_glow = loadImage("green_glow.png");
     red_led = color(232, 21, 21);
     green_led_off = color(19, 143, 65);
-    surface.setTitle("Device Playground - An AV System Simulator");
+    surface.setTitle("Device Playground");
 
     workbench = new Scene("workbench", "workbench1600x1000-3.png");
     workbench.setup();
@@ -49,6 +49,7 @@ public class App
     shelf.add(new PowerSupply(100, 83));
     shelf.add(new PowerSupply(250, 83));
     shelf.add(new PowerSupply(100, 446));
+    shelf.add(new PowerSupply(1100, 650));
     shelf.add(new Controller(160, 275));
     shelf.add(new NetworkSwitch(600, 336));
     shelf.add(new TLP(600, 43));
@@ -89,6 +90,17 @@ public class App
     int my = mouseY;
     int mx = mouseX;
 
+    if (currentScene.name == "shelf")
+    {
+      surface.setTitle("Device Playground - My Shelf");
+    } else if (currentScene.name == "workbench")
+    {
+      surface.setTitle("Device Playground - My Workbench");
+    } else
+    {
+      surface.setTitle("Device Playground");
+    }
+
     // Recalculate the connection line
     if (mutableState.connectorUpdateRequested || (mutableState.isHoldingConnectedWire && (mutableState.oldMouseY != my || mutableState.oldMouseX != mx)))
     {
@@ -106,7 +118,10 @@ public class App
       if (currentScene.wires.get(i).end0 != null || currentScene.wires.get(i).end1 != null)
         currentScene.wires.get(i).update();
     }
-    mutableState.heldWire.update();
+    if (mutableState.heldWire != null)
+    {
+      mutableState.heldWire.update();
+    }
 
     for (int i = 0; i < currentScene.size(); ++i)
     {
@@ -259,12 +274,12 @@ class Scene
   {
     list.add(o);
   }
-  
+
   public void remove(ISceneObject o)
   {
     list.remove(o);
   }
-  
+
   public ISceneObject get(int index)
   {
     return list.get(index);
