@@ -28,6 +28,16 @@ public class Box
   {
     connectors.add(new Connector(this, type, point.x, point.y, orientation, direction, theColor));
   }
+  
+  boolean isConnected()
+  {
+    for (int i = 0; i < connectors.size(); ++i)
+    {
+      if (connectors.get(i).theWire != null)
+          return true;
+    }
+    return false;
+  }
 
   public boolean send(Connector connector, IPayload payload)
   {
@@ -67,10 +77,11 @@ public class Box
 
   public int getConnectorIndexAtPoint(int x, int y)
   {
+    int offset = 5;
     for (int i = 0; i < connectors.size(); ++i)
     {
       Connector conn = connectors.get(i);
-      if (x > conn.relativeX + this.x && x < conn.relativeX + 10 + this.x && y > conn.relativeY + this.y && y < conn.relativeY + 10 + this.y)
+      if (x > conn.relativeX + this.x -offset && x < conn.relativeX + 10 + this.x + offset && y > conn.relativeY + this.y - offset && y < conn.relativeY + 10 + this.y + offset)
       {
         return i;
       }

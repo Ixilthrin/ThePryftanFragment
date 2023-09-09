@@ -1102,6 +1102,7 @@ public class NetworkSwitch implements ISceneObject
       }
 
       isOn = !isOn;
+      println("isOn = " + isOn);
       return true;
     }
     return false;
@@ -1270,7 +1271,7 @@ public class TLP implements ISceneObject
     if (theBox.contains(x, y))
     {
       if (power < .0001)
-        return false;
+        return true;
       if (!isOn)
       {
         isOn = true;
@@ -1660,7 +1661,7 @@ public class IREmitter implements ISceneObject
     if (theBox.contains(x, y))
     {
       if (power < .0001)
-        return false;
+        return true;
       if (!isOn)
       {
         isOn = true;
@@ -1786,6 +1787,8 @@ public class PowerSupply implements ISceneObject
   int timeSinceLastPowerDelivery = 0;
   float suppliedPowerPerTurn = 50;
   PImage electricityImage = loadImage("electricity3.png");
+  int shelfX;
+  int shelfY;
 
   public PowerSupply(int x, int y)
   {
@@ -1922,6 +1925,8 @@ public class Poe implements ISceneObject
 
   public boolean select(int x, int y)
   {
+    if (theBox.contains(x, y))
+      return true;
     return false;
   }
 

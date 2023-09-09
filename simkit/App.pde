@@ -1,7 +1,9 @@
 public class App
 {
-  PImage backgroundImage = null;
-  Scene scene = null;
+  //PImage backgroundImage = null;
+  Scene shelf;
+  Scene workbench = null;
+  Scene currentScene;
   PFont font;
   MutableState mutableState = new MutableState();
   ISceneObject hover = null;
@@ -23,9 +25,17 @@ public class App
     green_led_off = color(19, 143, 65);
     surface.setTitle("Device Playground - An AV System Simulator");
 
-    scene = new Scene();
+    workbench = new Scene("workbench", "workbench1600x1000-3.png");
+    workbench.setup();
+
+    shelf = new Scene("shelf", "shelf.png");
+    shelf.setup();
+
+    currentScene = shelf;
+
     mutableState.heldWire = new Wire(ConnectionTypeEnum.None);
-    backgroundImage = loadImage("workbench1600x1000-3.png");
+    //backgroundImage = loadImage("workbench1600x1000-3.png");
+    //backgroundImage = loadImage("shelf.png");
     size(1600, 1000);  // for background must be exactly same as image
     //fullScreen();
     frameRate(30);
@@ -36,40 +46,42 @@ public class App
 
   public void populateScene()
   {
-    scene.add(new PowerSupply(50, 100));
-    scene.add(new PowerSupply(50, 300));
-    scene.add(new PowerSupply(50, 500));
-    scene.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
-    scene.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
-    scene.add(new WireBundle(350, 700, ConnectionTypeEnum.HDMI));
-    scene.add(new WireBundle(200, 850, ConnectionTypeEnum.RadioSignal));
-    scene.add(new WireBundle(350, 850, ConnectionTypeEnum.RS232CaptiveScrew));
-    scene.add(new Controller(300, 300));
-    scene.add(new NetworkSwitch(600, 100));
-    scene.add(new TLP(600, 300));
-    scene.add(new CableBox(600, 700));
-    scene.add(new Display(1000, 300));
-    scene.add(new IREmitter(900, 700));
-    scene.add(new Poe(1100, 100));
-    scene.add(new Anchor(1400, 70));
-    scene.add(new Anchor(1450, 90));
-    scene.add(new Anchor(1450, 70));
-    scene.add(new Anchor(1400, 90));
-    scene.add(new Anchor(1400, 110));
-    scene.add(new Anchor(1400, 130));
-    scene.add(new Anchor(1400, 150));
-    scene.add(new Anchor(1400, 170));
-    scene.add(new Anchor(1400, 190));
+    shelf.add(new PowerSupply(100, 83));
+    shelf.add(new PowerSupply(250, 83));
+    shelf.add(new PowerSupply(100, 446));
+    shelf.add(new Controller(160, 275));
+    shelf.add(new NetworkSwitch(600, 336));
+    shelf.add(new TLP(600, 43));
+    shelf.add(new CableBox(600, 730));
+    shelf.add(new Display(1200, 304));
+    shelf.add(new IREmitter(860, 700));
+    shelf.add(new Poe(1200, 90));
+
+    workbench.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
+    workbench.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
+    workbench.add(new WireBundle(350, 700, ConnectionTypeEnum.HDMI));
+    workbench.add(new WireBundle(200, 850, ConnectionTypeEnum.RadioSignal));
+    workbench.add(new WireBundle(350, 850, ConnectionTypeEnum.RS232CaptiveScrew));
+
+    workbench.add(new Anchor(1400, 70));
+    workbench.add(new Anchor(1450, 90));
+    workbench.add(new Anchor(1450, 70));
+    workbench.add(new Anchor(1400, 90));
+    workbench.add(new Anchor(1400, 110));
+    workbench.add(new Anchor(1400, 130));
+    workbench.add(new Anchor(1400, 150));
+    workbench.add(new Anchor(1400, 170));
+    workbench.add(new Anchor(1400, 190));
   }
 
   public void addWire(Wire wire)
   {
-    scene.wires.add(wire);
+    currentScene.wires.add(wire);
   }
 
   public Scene getScene()
   {
-    return scene;
+    return currentScene;
   }
 
   public void update()
@@ -80,25 +92,25 @@ public class App
     // Recalculate the connection line
     if (mutableState.connectorUpdateRequested || (mutableState.isHoldingConnectedWire && (mutableState.oldMouseY != my || mutableState.oldMouseX != mx)))
     {
-      for (int i = 0; i < scene.wires.size(); ++i)
+      for (int i = 0; i < currentScene.wires.size(); ++i)
       {
-        scene.wires.get(i).calculatePoints();
+        currentScene.wires.get(i).calculatePoints();
       }
 
       mutableState.oldMouseY = my;
       mutableState.oldMouseX = mx;
       mutableState.connectorUpdateRequested = false;
     }
-    for (int i = 0; i < scene.wires.size(); ++i)
+    for (int i = 0; i < currentScene.wires.size(); ++i)
     {
-      if (scene.wires.get(i).end0 != null || scene.wires.get(i).end1 != null)
-        scene.wires.get(i).update();
+      if (currentScene.wires.get(i).end0 != null || currentScene.wires.get(i).end1 != null)
+        currentScene.wires.get(i).update();
     }
     mutableState.heldWire.update();
 
-    for (int i = 0; i < scene.size(); ++i)
+    for (int i = 0; i < currentScene.size(); ++i)
     {
-      scene.get(i).update();
+      currentScene.get(i).update();
     }
   }
 
@@ -106,11 +118,12 @@ public class App
   {
 
     clear();
-    background(backgroundImage);
+    background(currentScene.backgroundImage);
     //background(181, 125, 65);
-    
+
     textFont(font, 24);
-    fill(193, 46, 23);
+    //fill(193, 46, 23); // shade of red
+    fill(0, 100, 70);
     if (mutableState.isPaused)
     {
       text("PAUSED", 50, 50);
@@ -127,10 +140,15 @@ public class App
     {
       state = "Not Holding Wire";
     }
-    textFont(font, 24);
-    text(state, 250, 50);
 
-    text("Signal Speed: " + ((int)(app_global.mutableState.signalSpeed * 1000) + 1), 600, 50);
+    if (currentScene.name == "workbench")
+    {
+      textFont(font, 24);
+
+      text(state, 250, 50);
+
+      text("Signal Speed: " + ((int)(app_global.mutableState.signalSpeed * 1000) + 1), 600, 50);
+    }
 
     stroke(0, 0, 0);
     fill(0, 0, 0);
@@ -142,15 +160,15 @@ public class App
       mutableState.heldWire.draw();
     }
 
-    for (int i = 0; i < scene.wires.size(); ++i)
+    for (int i = 0; i < currentScene.wires.size(); ++i)
     {
-      if (scene.wires.get(i).end0 != null || scene.wires.get(i).end1 != null)
-        scene.wires.get(i).draw();
+      if (currentScene.wires.get(i).end0 != null || currentScene.wires.get(i).end1 != null)
+        currentScene.wires.get(i).draw();
     }
 
-    for (int i = 0; i < scene.size(); ++i)
+    for (int i = 0; i < currentScene.size(); ++i)
     {
-      scene.get(i).draw();
+      currentScene.get(i).draw();
     }
 
     if (hover != null && hover.getHoverText().size() > 0 && mutableState.heldObject == null)
@@ -168,12 +186,15 @@ public class App
             textWidth = textWidth(text);
           }
         }
-        fill(255);
-        rect(x + 10, y, textWidth + 10, 30 * hover.getHoverText().size() + 10);
-        fill(0);
+        stroke(0, 255, 0);
+        fill(0, 255, 0, 125);
+        float textBoxWidth = textWidth + 10;
+        float textBoxHeight = 30 * hover.getHoverText().size() + 10;
+        rect(x + 10 - textBoxWidth / 2, y - textBoxHeight, textBoxWidth, textBoxHeight);
+        fill(0, 50, 32);
         for (int i = 0; i < hover.getHoverText().size(); ++i)
         {
-          text(hover.getHoverText().get(i), x + 15, y + 25 + 30 * i);
+          text(hover.getHoverText().get(i), x + 15 - textBoxWidth / 2, y - textBoxHeight + 25 + 30 * i);
         }
       }
     }
@@ -216,17 +237,34 @@ public static class MacAddressProvider
 
 class Scene
 {
+  String name;
+  PImage backgroundImage = null;
+  String background;
   ArrayList<ISceneObject> list = null;
   ArrayList<Wire> wires = null;
-  public Scene()
+
+  public Scene(String name, String background)
   {
     list = new ArrayList<ISceneObject>();
     wires = new ArrayList<Wire>();
+    this.name = name;
+    this.background = background;
   }
+  public void setup()
+  {
+    backgroundImage = loadImage(background);
+  }
+
   public void add(ISceneObject o)
   {
     list.add(o);
   }
+  
+  public void remove(ISceneObject o)
+  {
+    list.remove(o);
+  }
+  
   public ISceneObject get(int index)
   {
     return list.get(index);
