@@ -108,26 +108,26 @@ public class App
     {
       for (int i = 0; i < currentScene.wires.size(); ++i)
       {
-        currentScene.wires.get(i).calculatePoints();
+        workbench.wires.get(i).calculatePoints();
       }
 
       mutableState.oldMouseY = my;
       mutableState.oldMouseX = mx;
       mutableState.connectorUpdateRequested = false;
     }
-    for (int i = 0; i < currentScene.wires.size(); ++i)
+    for (int i = 0; i < workbench.wires.size(); ++i)
     {
-      if (currentScene.wires.get(i).end0 != null || currentScene.wires.get(i).end1 != null)
-        currentScene.wires.get(i).update();
+      if (workbench.wires.get(i).end0 != null || workbench.wires.get(i).end1 != null)
+        workbench.wires.get(i).update();
     }
     if (mutableState.heldWire != null)
     {
       mutableState.heldWire.update();
     }
 
-    for (int i = 0; i < currentScene.size(); ++i)
+    for (int i = 0; i < workbench.size(); ++i)
     {
-      currentScene.get(i).update();
+      workbench.get(i).update();
     }
   }
 
@@ -141,7 +141,7 @@ public class App
     textFont(font, 24);
     //fill(193, 46, 23); // shade of red
     fill(0, 100, 70);
-    if (currentScene.paused && currentScene.name == "workbench")
+    if (currentScene.isPaused && currentScene.name == "workbench")
     {
       text("PAUSED", 50, 50);
     }
@@ -256,7 +256,7 @@ public static class MacAddressProvider
 
 class Scene
 {
-  boolean paused = false;
+  boolean isPaused = false;
   String name;
   PImage backgroundImage = null;
   String background;

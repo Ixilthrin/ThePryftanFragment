@@ -1,6 +1,8 @@
 int mousePressedX = 0;
 int mousePressedY = 0;
 
+boolean connectionChanged = false;
+
 void mousePressed()
 {
   int x = mouseX;
@@ -8,6 +10,8 @@ void mousePressed()
 
   int y = mouseY;
   mousePressedY = y;
+  
+  connectionChanged = false;
 
   // Try to disconnect a wire if mouse is over connector.
   if (!app_global.mutableState.isHoldingWire && !app_global.mutableState.isHoldingConnectedWire)
@@ -21,6 +25,7 @@ void mousePressed()
         app_global.mutableState.heldWire = wire;
         app_global.mutableState.isHoldingConnectedWire = true;
         app_global.mutableState.isConnecting = false;
+        connectionChanged = true;
         return;
       }
       if (sceneObject.getBox().contains(x, y))
@@ -40,6 +45,7 @@ void mousePressed()
       {
         app_global.mutableState.isHoldingConnectedWire = true;
         app_global.mutableState.isHoldingWire = false;
+        connectionChanged = true;
         return;
       }
     }
@@ -55,6 +61,7 @@ void mousePressed()
       {
         app_global.mutableState.isConnecting = true;
         app_global.mutableState.isHoldingConnectedWire = false;
+        connectionChanged = true;
         return;
       }
       Wire wire = sceneObject.getBox().tryDisconnectWire(app_global.mutableState.heldWire, x, y);
@@ -62,6 +69,7 @@ void mousePressed()
       {
         app_global.mutableState.isConnecting = false;
         app_global.mutableState.isHoldingConnectedWire = wire.isConnectedOnOnlyOneSide();
+        connectionChanged = true;
         return;
       }
     }
@@ -117,7 +125,7 @@ void mouseReleased()
         if (mouseButton == RIGHT)
         {
           indexOfSceneObjectToTransfer = i;
-        } else
+        } else if (!connectionChanged)
         {
           sobject.select(x, y);
         }
@@ -248,11 +256,11 @@ void keyPressed()
       if (app_global.currentScene.name == "shelf")
       {
         app_global.currentScene = app_global.workbench;
-        app_global.currentScene.paused = app_global.mutableState.previousWorkbenchPauseState;
+        app_global.workbench.isPaused = app_global.mutableState.previousWorkbenchPauseState;
       } else if (app_global.currentScene.name == "workbench")
       {
-        app_global.mutableState.previousWorkbenchPauseState = app_global.currentScene.paused;
-        app_global.currentScene.paused = true;
+        app_global.mutableState.previousWorkbenchPauseState = app_global.workbench.isPaused;
+        app_global.workbench.isPaused = true;
         app_global.mutableState.powerVisibility = PowerVisibilityEnum.ShowAll;
         app_global.currentScene = app_global.shelf;
       }
@@ -300,7 +308,7 @@ void keyPressed()
 
   if ((int)key == 32) // space
   {
-    app_global.currentScene.paused = !app_global.currentScene.paused;
+    app_global.workbench.isPaused = !app_global.workbench.isPaused;
   }
 
   //for (int i = 0; i < app_global.getScene().size(); ++i)

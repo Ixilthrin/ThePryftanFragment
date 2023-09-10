@@ -364,7 +364,7 @@ public class Wire implements IDrawable
 
   public void update()
   {
-    if (app_global.currentScene.paused)
+    if (app_global.workbench.isPaused)
     {
       previousUpdateTime = millis();
       return;
