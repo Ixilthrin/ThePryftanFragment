@@ -141,7 +141,7 @@ public class App
     textFont(font, 24);
     //fill(193, 46, 23); // shade of red
     fill(0, 100, 70);
-    if (mutableState.isPaused)
+    if (currentScene.paused && currentScene.name == "workbench")
     {
       text("PAUSED", 50, 50);
     }
@@ -239,8 +239,8 @@ public class MutableState
   int oldMouseX = 0;
 
   PowerVisibilityEnum powerVisibility = PowerVisibilityEnum.ShowAll;
-
-  boolean isPaused = false;
+  
+  boolean previousWorkbenchPauseState = false;
 }
 
 public static class MacAddressProvider
@@ -256,6 +256,7 @@ public static class MacAddressProvider
 
 class Scene
 {
+  boolean paused = false;
   String name;
   PImage backgroundImage = null;
   String background;

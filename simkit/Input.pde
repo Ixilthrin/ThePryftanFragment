@@ -237,6 +237,7 @@ void mouseMoved()
   app_global.hover = null;
 }
 
+
 void keyPressed()
 {
 
@@ -247,8 +248,11 @@ void keyPressed()
       if (app_global.currentScene.name == "shelf")
       {
         app_global.currentScene = app_global.workbench;
+        app_global.currentScene.paused = app_global.mutableState.previousWorkbenchPauseState;
       } else if (app_global.currentScene.name == "workbench")
       {
+        app_global.mutableState.previousWorkbenchPauseState = app_global.currentScene.paused;
+        app_global.currentScene.paused = true;
         app_global.mutableState.powerVisibility = PowerVisibilityEnum.ShowAll;
         app_global.currentScene = app_global.shelf;
       }
@@ -296,7 +300,7 @@ void keyPressed()
 
   if ((int)key == 32) // space
   {
-    app_global.mutableState.isPaused = !app_global.mutableState.isPaused;
+    app_global.currentScene.paused = !app_global.currentScene.paused;
   }
 
   //for (int i = 0; i < app_global.getScene().size(); ++i)

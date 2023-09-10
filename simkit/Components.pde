@@ -1,4 +1,4 @@
- //<>//
+ //<>// //<>//
 class CommandPayload implements IPayload
 {
   CommandTypeEnum type;
@@ -364,7 +364,7 @@ public class Wire implements IDrawable
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;

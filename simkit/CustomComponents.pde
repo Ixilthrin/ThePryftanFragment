@@ -1,4 +1,4 @@
-public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 {
   public static int DepositWidth = 70;
   public static int DepositHeight = 70;
@@ -205,7 +205,7 @@ public class CodeBox implements ISceneObject, IKeyboardListener
     //textInput.x = theBox.x + 5;
     //textInput.y = theBox.y + 20;
 
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -303,7 +303,7 @@ public class NaturalDeposit implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -384,7 +384,7 @@ public class WoodenBox implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -493,7 +493,7 @@ public class CoalPoweredMiningDrill implements ISceneObject
   public void update()
   {
     int currentTime = millis();
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -643,7 +643,7 @@ public class StoneFurnace implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -788,7 +788,7 @@ public class IBM704 implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -929,7 +929,7 @@ public class Controller implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -1061,7 +1061,7 @@ public class NetworkSwitch implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -1232,7 +1232,7 @@ public class TLP implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -1359,7 +1359,7 @@ public class CableBox implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -1484,7 +1484,7 @@ public class Display implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -1625,7 +1625,7 @@ public class IREmitter implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
@@ -1836,7 +1836,7 @@ public class PowerSupply implements ISceneObject
 
   public void update()
   {
-    if (app_global.mutableState.isPaused)
+    if (app_global.currentScene.paused)
     {
       previousUpdateTime = millis();
       return;
