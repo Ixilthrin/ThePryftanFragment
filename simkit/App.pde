@@ -57,6 +57,8 @@ public class App
     shelf.add(new Display(1200, 304));
     shelf.add(new IREmitter(860, 700));
     shelf.add(new Poe(1200, 90));
+    shelf.add(new IBM704(100, 645));
+    shelf.add(new IBM704(300, 645));
 
     workbench.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
     workbench.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));

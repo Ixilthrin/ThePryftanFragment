@@ -1,10 +1,15 @@
+int mousePressedX = 0;
+int mousePressedY = 0;
+
 void mousePressed()
 {
   int x = mouseX;
+  mousePressedX = x;
+
   int y = mouseY;
+  mousePressedY = y;
 
-
-
+  // Try to disconnect a wire if mouse is over connector.
   if (!app_global.mutableState.isHoldingWire && !app_global.mutableState.isHoldingConnectedWire)
   {
     for (int i = app_global.getScene().size() - 1; i >= 0; --i)
@@ -24,7 +29,8 @@ void mousePressed()
       }
     }
   }
-  
+
+  // Try to connect wire that has not yet been connected if mouse is over a connector.
   if (app_global.mutableState.isHoldingWire)
   {
     for (int i = app_global.getScene().size() - 1; i >= 0; --i)
@@ -39,6 +45,7 @@ void mousePressed()
     }
   }
 
+  // Try to connect or disconnect wire that is connected to one side.
   if (app_global.mutableState.isHoldingConnectedWire)
   {
     for (int i = app_global.getScene().size() - 1; i >= 0; --i)
@@ -60,13 +67,13 @@ void mousePressed()
     }
     return;
   }
-  
-  
+
+  // If holding something then we are done here.
   if (app_global.mutableState.heldObject != null || app_global.mutableState.isHoldingConnectedWire || app_global.mutableState.isHoldingWire)
     return;
+
   app_global.mutableState.isMouseDown = true;
-  
-  
+
   app_global.mutableState.mouseDownX = x;
   app_global.mutableState.mouseDownY = y;
 
@@ -89,6 +96,78 @@ void mousePressed()
 
 void mouseReleased()
 {
+  int x = mouseX;
+  int y = mouseY;
+
+  boolean objectMoved = x != mousePressedX || y != mousePressedY;
+  if (objectMoved)
+  {
+    finishMousePressAndRelease();
+    return;
+  }
+
+  if (!app_global.mutableState.isHoldingConnectedWire)
+  {
+    int indexOfSceneObjectToTransfer = -1;
+    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
+    {
+      ISceneObject sobject = app_global.currentScene.get(i);
+      if (sobject.getBox().contains(x, y))
+      {
+        if (mouseButton == RIGHT)
+        {
+          indexOfSceneObjectToTransfer = i;
+        } else
+        {
+          sobject.select(x, y);
+        }
+        break;
+      }
+    }
+
+    if (indexOfSceneObjectToTransfer >= 0)
+    {
+      Scene targetScene = null;
+      if (app_global.currentScene.name == "workbench")
+        targetScene = app_global.shelf;
+      else
+        targetScene = app_global.workbench;
+
+      ISceneObject o = app_global.currentScene.get(indexOfSceneObjectToTransfer);
+      if (o.getBox().isConnected())
+      {
+        finishMousePressAndRelease();
+        return;
+      }
+      app_global.currentScene.remove(o);
+      targetScene.add(o);
+      finishMousePressAndRelease();
+      return;
+    }
+  }
+
+  for (int i = app_global.getScene().size() - 1; i >= 0; --i)
+  {
+    ISceneObject sceneObject = app_global.getScene().get(i);
+    if (sceneObject.getBox().contains(x, y) && sceneObject instanceof IWireSource)
+    {
+      IWireSource wireSource = (IWireSource) sceneObject;
+      app_global.mutableState.heldWire = wireSource.getNewWire();
+      app_global.addWire(app_global.mutableState.heldWire);
+      app_global.mutableState.isHoldingWire = true;
+      finishMousePressAndRelease();
+      return;
+    }
+  }
+
+  if (app_global.mutableState.isHoldingWire)
+    app_global.mutableState.isHoldingWire = false;
+
+  finishMousePressAndRelease();
+}
+
+void finishMousePressAndRelease()
+{
   app_global.mutableState.heldObject = null;
   app_global.mutableState.isMouseDown = false;
   app_global.hoverStart = millis();
@@ -109,12 +188,13 @@ void mouseDragged()
   }
 }
 
+// Don't use this event because it is called after mousePressed() and mouseReleased()
+// and this leads to duplicated behavior.
 void mouseClicked()
 {
-println("clicked!");
-  int x = mouseX;
-  int y = mouseY;
 
+  // DON'T USE THIS METHOD
+  
   //if (app_global.selectionBox.contains(x, y))
   //{
   //  app_global.selectionBox.clicked(x, y);
@@ -128,61 +208,6 @@ println("clicked!");
   //}
 
   //app_global.inputFocus = null;
-
-  if (!app_global.mutableState.isHoldingConnectedWire)
-  {
-
-    boolean itemWasSelected = false;
-    int indexOfSceneObjectToMove = -1;
-    for (int i = app_global.getScene().size() - 1; i >= 0; --i)
-    {
-      if (app_global.currentScene.get(i).select(x, y))
-      {
-        itemWasSelected = true;
-        if (mouseButton == RIGHT)
-        {
-          indexOfSceneObjectToMove = i;
-        }
-        break;
-      }
-    }
-
-    if (indexOfSceneObjectToMove >= 0)
-    {
-      Scene targetScene = null;
-      if (app_global.currentScene.name == "workbench")
-        targetScene = app_global.shelf;
-      else
-        targetScene = app_global.workbench;
-
-      ISceneObject o = app_global.currentScene.get(indexOfSceneObjectToMove);
-      if (o.getBox().isConnected())
-        return;
-      app_global.currentScene.remove(o);
-      targetScene.add(o);
-      return;
-    }
-    if (itemWasSelected)
-    {
-      return;
-    }
-  }
-
-  for (int i = app_global.getScene().size() - 1; i >= 0; --i)
-  {
-    ISceneObject sceneObject = app_global.getScene().get(i);
-    if (sceneObject.getBox().contains(x, y) && sceneObject instanceof IWireSource)
-    {
-      IWireSource wireSource = (IWireSource) sceneObject;
-      app_global.mutableState.heldWire = wireSource.getNewWire();
-      app_global.addWire(app_global.mutableState.heldWire);
-      app_global.mutableState.isHoldingWire = true;
-      return;
-    }
-  }
-
-  if (app_global.mutableState.isHoldingWire)
-    app_global.mutableState.isHoldingWire = false;
 }
 
 void mouseMoved()

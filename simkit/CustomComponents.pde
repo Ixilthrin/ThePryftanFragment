@@ -825,15 +825,24 @@ public class IBM704 implements ISceneObject
     if (theBox.contains(x, y))
     {
       if (power < .0001)
-        return false;
+        return true;
       if (!isOn)
       {
-        //isOn = true;
+        isOn = true;
         return true;
       }
-      //Connector connector = theBox.connectors.get(0);
-      //return theBox.send(connector, new CommandPayload());
-      return true;
+      Connector connector = theBox.connectors.get(0);
+      if (connector.theWire != null)
+      {
+        return theBox.send(connector, new CommandPayload(CommandTypeEnum.TogglePower, 0, 1));
+      } else
+      {
+        connector = theBox.connectors.get(1);
+        if (connector.theWire != null)
+        {
+          return theBox.send(connector, new CommandPayload(CommandTypeEnum.TogglePower, 0, 1));
+        }
+      }
     }
     return false;
   }
