@@ -194,7 +194,7 @@ void mouseClicked()
 {
 
   // DON'T USE THIS METHOD
-  
+
   //if (app_global.selectionBox.contains(x, y))
   //{
   //  app_global.selectionBox.clicked(x, y);
@@ -249,13 +249,36 @@ void keyPressed()
         app_global.currentScene = app_global.workbench;
       } else if (app_global.currentScene.name == "workbench")
       {
+        app_global.mutableState.powerVisibility = PowerVisibilityEnum.ShowAll;
         app_global.currentScene = app_global.shelf;
       }
     }
   }
 
   if ((int)key == 112)  // P key
-    app_global.mutableState.hidePower = !app_global.mutableState.hidePower;
+  {
+    if (app_global.currentScene.name == "workbench")
+    {
+      switch (app_global.mutableState.powerVisibility)
+      {
+      case ShowAll:
+        {
+          app_global.mutableState.powerVisibility = PowerVisibilityEnum.HideSignal;
+          break;
+        }
+      case HideSignal:
+        {
+          app_global.mutableState.powerVisibility = PowerVisibilityEnum.HideAll;
+          break;
+        }
+      case HideAll:
+        {
+          app_global.mutableState.powerVisibility = PowerVisibilityEnum.ShowAll;
+          break;
+        }
+      }
+    }
+  }
 
   if ((int)key == 44) // , key
     app_global.mutableState.signalSpeed -= .0005;
@@ -285,5 +308,5 @@ void keyPressed()
   // return;
   //}
   //}
-  println((int)key);
+  //println((int)key);
 }

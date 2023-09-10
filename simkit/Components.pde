@@ -409,6 +409,9 @@ public class Wire implements IDrawable
 
   public void draw()
   {
+    if (connectionType == ConnectionTypeEnum.Power && app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideAll)
+        return;
+        
     color wireColor = color(0, 0, 0);
     if (connectionType == ConnectionTypeEnum.Ethernet)
     {
@@ -468,7 +471,7 @@ public class Wire implements IDrawable
             if (((ItemPayload)payloadProgress.payload).type == ItemTypeEnum.Electricity)
             {
               imageSize = 30;
-              if (app_global.mutableState.hidePower)
+              if (app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideSignal || app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideAll)
                 imageSize = 0;
             }
           }

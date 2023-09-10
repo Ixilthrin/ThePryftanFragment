@@ -1,4 +1,4 @@
-public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 {
   public static int DepositWidth = 70;
   public static int DepositHeight = 70;
@@ -1111,7 +1111,6 @@ public class NetworkSwitch implements ISceneObject
       }
 
       isOn = !isOn;
-      println("isOn = " + isOn);
       return true;
     }
     return false;
@@ -1860,7 +1859,10 @@ public class PowerSupply implements ISceneObject
 
   public void draw()
   {
-    theBox.draw();
+    if (app_global.mutableState.powerVisibility != PowerVisibilityEnum.HideAll)
+    {
+      theBox.draw();
+    }
   }
 
   public boolean select(int x, int y)

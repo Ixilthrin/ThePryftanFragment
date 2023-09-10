@@ -85,3 +85,10 @@ enum FurnaceProductionEnum
     CopperPlates,
     SteelPlates
 }
+
+enum PowerVisibilityEnum
+{
+  ShowAll,
+  HideSignal,
+  HideAll
+}

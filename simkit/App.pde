@@ -237,7 +237,9 @@ public class MutableState
   int mouseDownY = 0;
   int oldMouseY = 0;
   int oldMouseX = 0;
-  boolean hidePower = false;
+
+  PowerVisibilityEnum powerVisibility = PowerVisibilityEnum.ShowAll;
+
   boolean isPaused = false;
 }
 
