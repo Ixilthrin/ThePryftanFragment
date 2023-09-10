@@ -1743,6 +1743,11 @@ public class WireBundle implements ISceneObject, IWireSource
   {
     theBox = box;
   }
+  
+  public ConnectionTypeEnum getConnectionType()
+  {
+    return type;
+  }
 
   public Box getBox()
   {

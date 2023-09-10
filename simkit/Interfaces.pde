@@ -19,6 +19,7 @@ public interface ISceneObject extends IBoxProvider, IDrawable
 
 public interface IWireSource
 {
+  ConnectionTypeEnum getConnectionType();
   Wire getNewWire();
 }
 

@@ -60,11 +60,17 @@ public class App
     shelf.add(new IBM704(100, 645));
     shelf.add(new IBM704(300, 645));
 
-    workbench.add(new WireBundle(50, 700, ConnectionTypeEnum.Ethernet));
-    workbench.add(new WireBundle(200, 700, ConnectionTypeEnum.Power));
-    workbench.add(new WireBundle(350, 700, ConnectionTypeEnum.HDMI));
-    workbench.add(new WireBundle(200, 850, ConnectionTypeEnum.RadioSignal));
-    workbench.add(new WireBundle(350, 850, ConnectionTypeEnum.RS232CaptiveScrew));
+    int bx = 50;
+    int by = height - ComponentProps.WireHeight - 50;
+    workbench.add(new WireBundle(bx, by, ConnectionTypeEnum.Ethernet));
+    bx += ComponentProps.WireWidth + 50;
+    workbench.add(new WireBundle(bx, by, ConnectionTypeEnum.Power));
+    bx += ComponentProps.WireWidth + 50;
+    workbench.add(new WireBundle(bx, by, ConnectionTypeEnum.HDMI));
+    bx += ComponentProps.WireWidth + 50;
+    workbench.add(new WireBundle(bx, by, ConnectionTypeEnum.RadioSignal));
+    bx += ComponentProps.WireWidth + 50;
+    workbench.add(new WireBundle(bx, by, ConnectionTypeEnum.RS232CaptiveScrew));
 
     workbench.add(new Anchor(1400, 70));
     workbench.add(new Anchor(1450, 90));
@@ -174,7 +180,13 @@ public class App
 
     if (mutableState.isHoldingConnectedWire)
     {
-      mutableState.heldWire.draw();
+      if (mutableState.heldWire == null)
+      {
+        mutableState.isHoldingConnectedWire = false;
+      } else
+      {
+        mutableState.heldWire.draw();
+      }
     }
 
     for (int i = 0; i < currentScene.wires.size(); ++i)
@@ -239,7 +251,7 @@ public class MutableState
   int oldMouseX = 0;
 
   PowerVisibilityEnum powerVisibility = PowerVisibilityEnum.ShowAll;
-  
+
   boolean previousWorkbenchPauseState = false;
 }
 

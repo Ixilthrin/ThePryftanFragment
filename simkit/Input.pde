@@ -10,8 +10,28 @@ void mousePressed()
 
   int y = mouseY;
   mousePressedY = y;
-  
+
   connectionChanged = false;
+
+  if (mouseButton == RIGHT && app_global.mutableState.heldWire != null)
+  {
+    Wire wire = app_global.mutableState.heldWire;
+    Connector connector = wire.end0;
+    if (connector == null)
+    {
+      connector = wire.end1;
+    }
+    if (connector != null)
+    {
+      connector.theWire = null;
+      wire.end0 = null;
+      wire.end1 = null;
+      app_global.mutableState.heldWire = null;
+      app_global.mutableState.isHoldingConnectedWire = false;
+      connectionChanged = true;
+      return;
+    }
+  }
 
   // Try to disconnect a wire if mouse is over connector.
   if (!app_global.mutableState.isHoldingWire && !app_global.mutableState.isHoldingConnectedWire)
@@ -61,6 +81,7 @@ void mousePressed()
       {
         app_global.mutableState.isConnecting = true;
         app_global.mutableState.isHoldingConnectedWire = false;
+        app_global.mutableState.heldWire = null;
         connectionChanged = true;
         return;
       }
@@ -92,6 +113,10 @@ void mousePressed()
     ISceneObject sceneObject = app_global.getScene().get(i);
     if (sceneObject.getBox().contains(x, y))
     {
+      if (sceneObject instanceof PowerSupply && app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideAll)
+      {
+        break;
+      }
       app_global.mutableState.heldObject = sceneObject;
       objectToFront = sceneObject;
       break;
@@ -127,6 +152,10 @@ void mouseReleased()
           indexOfSceneObjectToTransfer = i;
         } else if (!connectionChanged)
         {
+          if (sobject instanceof PowerSupply && app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideAll)
+          {
+            break;
+          }
           sobject.select(x, y);
         }
         break;
@@ -160,6 +189,11 @@ void mouseReleased()
     if (sceneObject.getBox().contains(x, y) && sceneObject instanceof IWireSource)
     {
       IWireSource wireSource = (IWireSource) sceneObject;
+      if (wireSource.getConnectionType() == ConnectionTypeEnum.Power && app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideAll)
+      {
+        finishMousePressAndRelease();
+        return;
+      }
       app_global.mutableState.heldWire = wireSource.getNewWire();
       app_global.addWire(app_global.mutableState.heldWire);
       app_global.mutableState.isHoldingWire = true;
@@ -168,8 +202,11 @@ void mouseReleased()
     }
   }
 
-  if (app_global.mutableState.isHoldingWire)
+  if (app_global.mutableState.isHoldingWire && mouseButton == RIGHT)
+  {
     app_global.mutableState.isHoldingWire = false;
+    app_global.mutableState.heldWire = null;
+  }
 
   finishMousePressAndRelease();
 }
@@ -234,6 +271,11 @@ void mouseMoved()
     ISceneObject sceneObject = app_global.getScene().get(i);
     if (sceneObject.getBox().contains(x, y))
     {
+      if (sceneObject instanceof PowerSupply && app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideAll)
+      {
+        app_global.hover = null;
+        return;
+      }
       if (app_global.hover != sceneObject && app_global.mutableState.heldObject == null)
       {
         app_global.hoverStart = millis();

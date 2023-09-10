@@ -221,6 +221,10 @@ public class Box
       if (c > -1)
       {
         Connector connector = getConnectorAtPoint(x, y);
+        if (connector.connectionType == ConnectionTypeEnum.Power && app_global.mutableState.powerVisibility == PowerVisibilityEnum.HideAll)
+        {
+          return null;
+        }
         if (connector.theWire != null && (heldWire == null || heldWire == connector.theWire))
         {
           Wire wire = connector.theWire;
