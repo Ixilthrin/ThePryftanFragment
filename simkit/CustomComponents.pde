@@ -23,8 +23,12 @@ public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>// //<
   public static int TLPHeight = 160;
   public static int NetworkSwitchWidth = 304;
   public static int NetworkSwitchHeight = 50;
-  public static int ControllerWidth = 230;
+  public static int ControllerWidth = 150;
   public static int ControllerHeight = 110;
+  public static int ControllerWithSwitchWidth = 230;
+  public static int ControllerWithSwitchHeight = 110;
+  public static int ControllerWithPoeWidth = 230;
+  public static int ControllerWithPoeHeight = 110;
   public static int DisplayWidth = 300;
   public static int DisplayHeight = 270;
   public static int IREmitterWidth = 80;
@@ -1008,8 +1012,8 @@ public class ControllerWithSwitch implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = ComponentProps.ControllerWidth;//160;
-  int height = ComponentProps.ControllerHeight;//80;
+  int width = ComponentProps.ControllerWithSwitchWidth;//160;
+  int height = ComponentProps.ControllerWithSwitchHeight;//80;
 
   public ControllerWithSwitch(int x, int y)
   {
@@ -1133,8 +1137,8 @@ public class ControllerWithPoe implements ISceneObject
   float power = 0;
   float powerDrainRate = .005;
   int previousUpdateTime = 0;
-  int width = ComponentProps.ControllerWidth;//160;
-  int height = ComponentProps.ControllerHeight;//80;
+  int width = ComponentProps.ControllerWithPoeWidth;//160;
+  int height = ComponentProps.ControllerWithPoeHeight;//80;
 
   public ControllerWithPoe(int x, int y)
   {
