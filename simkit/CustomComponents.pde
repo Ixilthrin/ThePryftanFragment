@@ -891,15 +891,12 @@ public class Controller implements ISceneObject
 
   public Controller(int x, int y)
   {
-    PImage image = loadImage("primary-controller.png");
+    PImage image = loadImage("controller.png");
     theBox = new Box(x, y, width, height, image);
     theBox.theProvider = this;
 
     theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.75f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.83f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.91f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
-    theBox.addConnector(ConnectionTypeEnum.RS232CaptiveScrew, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
 
     mac = MacAddressProvider.getMac();
   }
@@ -990,6 +987,269 @@ public class Controller implements ISceneObject
         power = quantity;
         return true;
       }
+    }
+
+    if (payload instanceof CommandPayload && isOn)
+    {
+      Connector connector = theBox.connectors.get(0);
+      theBox.send(connector, new DriverCommandPayload());
+      return true;
+    }
+    return false;
+  }
+}
+
+public class ControllerWithSwitch implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+  int mac;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = ComponentProps.ControllerWidth;//160;
+  int height = ComponentProps.ControllerHeight;//80;
+
+  public ControllerWithSwitch(int x, int y)
+  {
+    PImage image = loadImage("primary-controller.png");
+    theBox = new Box(x, y, width, height, image);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.75f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.83f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.91f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RS232CaptiveScrew, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+
+    mac = MacAddressProvider.getMac();
+  }
+
+  public ControllerWithSwitch(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("Controller with Network Switch");
+    text.add("MAC:  " + mac);
+    text.add("power: " + (int)power);
+    return text;
+  }
+
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    if (app_global.workbench.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+      isOn = false;
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+
+    if (isOn)
+    {
+      stroke(0, 255, 0);
+      fill(0, 255, 0);
+    } else
+    {
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
+    }
+    ellipse(theBox.x + 10, theBox.y + .3f * height, 10, 10);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x, theBox.y + .3f * height - 10, 20, 20);
+    }
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      isOn = !isOn;
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        power = quantity;
+        return true;
+      }
+    }
+
+    if (payload instanceof CommandPayload && isOn)
+    {
+      Connector connector = theBox.connectors.get(4);
+      theBox.send(connector, new DriverCommandPayload());
+      return true;
+    }
+    return false;
+  }
+}
+
+public class ControllerWithPoe implements ISceneObject
+{
+  Box theBox;
+  public boolean isOn;
+  int mac;
+
+  float power = 0;
+  float powerDrainRate = .005;
+  int previousUpdateTime = 0;
+  int width = ComponentProps.ControllerWidth;//160;
+  int height = ComponentProps.ControllerHeight;//80;
+
+  public ControllerWithPoe(int x, int y)
+  {
+    PImage image = loadImage("controller-with-poe.png");
+    theBox = new Box(x, y, width, height, image);
+    theBox.theProvider = this;
+
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.59f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.72f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.84f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RS232CaptiveScrew, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.94f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+
+    mac = MacAddressProvider.getMac();
+  }
+
+  public ControllerWithPoe(Box box)
+  {
+    theBox = box;
+  }
+
+  public Box getBox()
+  {
+    return theBox;
+  }
+
+  public ArrayList<String> getHoverText()
+  {
+    ArrayList<String> text = new ArrayList<String>();
+    text.add("Controller with POE");
+    text.add("MAC:  " + mac);
+    text.add("power: " + (int)power);
+    return text;
+  }
+
+  public void connectionChanged()
+  {
+  }
+
+  public void update()
+  {
+    if (app_global.workbench.isPaused)
+    {
+      previousUpdateTime = millis();
+      return;
+    }
+    int currentTime = millis();
+    if (isOn)
+    {
+      float powerUsage = (float)(currentTime - previousUpdateTime) * powerDrainRate;
+      power -= powerUsage;
+      if (power < 0)
+        power = 0;
+    }
+    if (power < .0001)
+      isOn = false;
+    previousUpdateTime = currentTime;
+  }
+
+  public void draw()
+  {
+    theBox.draw();
+
+    if (isOn)
+    {
+      stroke(0, 255, 0);
+      fill(0, 255, 0);
+    } else
+    {
+      stroke(app_global.green_led_off);
+      fill(app_global.green_led_off);
+    }
+    ellipse(theBox.x + 10, theBox.y + .3f * height, 10, 10);
+
+    if (isOn)
+    {
+      image(app_global.green_glow, theBox.x, theBox.y + .3f * height - 10, 20, 20);
+    }
+  }
+
+  public boolean select(int x, int y)
+  {
+    if (theBox.contains(x, y))
+    {
+      isOn = !isOn;
+      return true;
+    }
+    return false;
+  }
+
+  public boolean receive(IPayload payload, Connector source)
+  {
+    if (payload instanceof ItemPayload)
+    {
+      ItemPayload itemPayload = (ItemPayload)payload;
+      ItemTypeEnum type = itemPayload.type;
+      int quantity = itemPayload.quantity;
+      if (type == ItemTypeEnum.Electricity)
+      {
+        // send power over ethernet ports index 1 and 2
+        if (isOn)
+        {
+          theBox.send(theBox.connectors.get(1), payload);
+          theBox.send(theBox.connectors.get(2), payload);
+        }
+
+        power = quantity;
+        return true;
+      }
+    }
+    if (payload instanceof ItemPayload)
+    {
+      theBox.send(theBox.connectors.get(0), payload);
+      return true;
     }
 
     if (payload instanceof CommandPayload && isOn)
@@ -1201,8 +1461,8 @@ public class TLP implements ISceneObject
     theBox = new Box(x, y, width, height, image_off);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width-14, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
-    theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point(theBox.width - 50, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Power, new Point(55, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
 
     mac = MacAddressProvider.getMac();
   }
@@ -1743,7 +2003,7 @@ public class WireBundle implements ISceneObject, IWireSource
   {
     theBox = box;
   }
-  
+
   public ConnectionTypeEnum getConnectionType()
   {
     return type;

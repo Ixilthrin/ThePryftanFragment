@@ -50,7 +50,9 @@ public class App
     shelf.add(new PowerSupply(250, 83));
     shelf.add(new PowerSupply(100, 446));
     shelf.add(new PowerSupply(1100, 650));
-    shelf.add(new Controller(160, 275));
+    shelf.add(new ControllerWithSwitch(160, 275));
+    shelf.add(new ControllerWithPoe(610, 450));
+    shelf.add(new Controller(610, 450));
     shelf.add(new NetworkSwitch(600, 336));
     shelf.add(new TLP(600, 43));
     shelf.add(new CableBox(600, 730));
