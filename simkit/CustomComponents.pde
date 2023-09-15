@@ -1,4 +1,4 @@
-public static class ComponentProps //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+public static class ComponentProps //<>//
 {
   public static int DepositWidth = 70;
   public static int DepositHeight = 70;
@@ -899,8 +899,9 @@ public class Controller implements ISceneObject
     theBox = new Box(x, y, width, height, image);
     theBox.theProvider = this;
 
-    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.75f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
+    theBox.addConnector(ConnectionTypeEnum.Ethernet, new Point((int)(.84f * theBox.width), height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
     theBox.addConnector(ConnectionTypeEnum.Power, new Point(5, height), OrientationEnum.South, DataDirectionEnum.Input, color(0, 0, 0));
+    theBox.addConnector(ConnectionTypeEnum.RS232CaptiveScrew, new Point(30, height), OrientationEnum.South, DataDirectionEnum.Twoway, color(0, 0, 255));
 
     mac = MacAddressProvider.getMac();
   }
@@ -995,7 +996,7 @@ public class Controller implements ISceneObject
 
     if (payload instanceof CommandPayload && isOn)
     {
-      Connector connector = theBox.connectors.get(0);
+      Connector connector = theBox.connectors.get(2);
       theBox.send(connector, new DriverCommandPayload());
       return true;
     }
